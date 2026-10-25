@@ -1,0 +1,1454 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#fbf3e4">
+<title>Pass the Basket · a Hendricks & Piper game</title>
+<style>:root{--accent:#e8833a;--ink:#5a3b2e;--cream:#fbf1de;--paper:#fffaf0;--line:#efdcc0;--wood:#d9a066;--wood-d:#a8703f;--ok:#6f9a64;--bad:#c9524a;--role:#7fa874;--sb:env(safe-area-inset-bottom,0px);--pw:52px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#e6d9bf;color:var(--ink);font-family:ui-rounded,"Nunito","Segoe UI",system-ui,-apple-system,sans-serif;font-size:16px;overscroll-behavior:none;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea{-webkit-user-select:text;user-select:text;font:inherit}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:560px;margin:0 auto;background:var(--cream);position:relative;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,.18)}
+#bar{flex:0 0 auto;height:50px;display:flex;align-items:center;gap:8px;padding:0 8px 0 10px;background:#fff;border-bottom:2px solid var(--line)}
+.blogo{display:flex}.bname{flex:1;font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:44px;height:44px;border:0;border-radius:12px;background:transparent;display:grid;place-items:center;color:var(--ink)}.ib:active{background:var(--line)}
+#role{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--role);color:#fff;font-size:11.5px;letter-spacing:.04em}
+#role[hidden]{display:none}#role b{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#role .who{font-weight:800;background:rgba(0,0,0,.22);padding:3px 8px;border-radius:10px;white-space:nowrap}
+.pips{display:flex;gap:4px}.pips i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}.pips i.done{background:#fff}.pips i.now{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.4)}
+#view{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
+.screen{flex:1;min-height:0;display:flex;flex-direction:column}
+.scroll,.body{overflow-y:auto;overscroll-behavior:contain}.body{flex:1;min-height:0;padding-bottom:10px}
+.centre{align-items:center;justify-content:center;text-align:center;padding:24px;gap:12px}
+.dim{color:#a39688;font-size:13px}
+.fine{font-size:13px;color:#8c8076;margin:4px 12px}
+/* buttons */
+.btn{min-height:50px;border:0;border-radius:15px;padding:0 20px;background:var(--accent);color:#fff;font-weight:800;font-size:17px;box-shadow:0 4px 0 rgba(0,0,0,.2);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;line-height:1.15}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.btn:disabled{opacity:.4;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--line);box-shadow:0 3px 0 var(--line)}
+.btn.alt{background:var(--ok)}.btn.danger{background:var(--bad)}.btn.light{background:#fff;color:var(--role)}
+.btn.big{min-height:60px;font-size:19px;width:100%}.btn.big small{display:block;font-weight:600;font-size:12.5px;opacity:.9;margin-top:2px}
+.btn.grow{flex:1}.btn.m-cash{background:var(--ok)}.btn.m-card{background:#3b6fb6}
+.pulse{animation:pulse 1s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 4px 0 rgba(0,0,0,.2),0 0 18px 7px var(--accent)}}
+.actions .btn.ghost{padding:0 14px}.actions .btn{font-size:16px}.actions{flex:0 0 auto;display:flex;gap:10px;padding:10px 12px calc(10px + var(--sb));background:#fff;border-top:2px solid var(--line)}
+/* title */
+.title{align-items:center;padding:18px 18px 12px;text-align:center}
+.tlogo{margin-top:6px;animation:bob 3s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-6px) rotate(2deg)}}
+.title h1{margin:10px 0 2px;font-size:32px;line-height:1.05}.sub{margin:0 0 12px;color:#8c8076}
+.steps5{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 16px;counter-reset:s}
+.steps5 li{counter-increment:s;font-size:11.5px;font-weight:800;background:#fff;border:2px solid var(--line);border-radius:12px;padding:5px 8px}
+.steps5 li::before{content:counter(s) " ";color:var(--accent)}
+.tbtns{display:flex;flex-direction:column;gap:12px;width:100%;max-width:380px}
+/* hand-off */
+.handoff{background:var(--role);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;gap:10px}
+.handoff h2{font-size:27px;margin:6px 0 0;line-height:1.1}.handoff p{font-size:17px;margin:4px 0 10px;max-width:340px;opacity:.95}
+.rolechip{background:#fff;color:var(--role);font-weight:900;font-size:22px;padding:6px 18px;border-radius:22px;letter-spacing:.04em;text-transform:uppercase}
+.phone{animation:swing 1.6s ease-in-out infinite;transform-origin:50% 90%}@keyframes swing{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg) translateX(12px)}}
+.hmeta{background:rgba(0,0,0,.2);padding:8px 14px;border-radius:12px;font-size:16px!important}
+/* shelves */
+.shelfwrap{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;touch-action:pan-x;scrollbar-width:none;background:linear-gradient(#f6ead0,#ecd9b3);border-bottom:5px solid var(--wood-d);position:relative}
+.shelfwrap::-webkit-scrollbar{display:none}
+.shelf{height:100%;display:flex;flex-direction:column;padding:4px 10px 0}
+.srow{flex:1;min-height:0;display:flex;align-items:flex-end}
+.bay{width:124px;flex:0 0 124px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:0 3px 4px;border-radius:10px;position:relative}
+.slots{display:flex;align-items:flex-end;justify-content:center;gap:3px;width:calc(100% + 6px);padding-bottom:9px;background:linear-gradient(to top,var(--wood-d) 0 3px,var(--wood) 3px 9px,transparent 9px);min-height:calc(var(--pw)*1.34 + 9px)}
+.slot{width:var(--pw);height:calc(var(--pw)*1.3333);flex:0 0 auto}
+.slot svg,.trayitem svg,.bi svg,.mi svg,.bt svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25))}
+.slot.empty{border:2px dashed rgba(138,90,43,.35);border-radius:9px;margin-bottom:0}
+.shop .slot.empty{border-color:transparent}
+.tag{width:100%;margin-top:5px;background:#fff;border:2px solid #d8c9a8;border-radius:6px;padding:2px 3px;text-align:center;font-size:10.5px;line-height:1.1;min-height:34px;display:flex;flex-direction:column;justify-content:center}
+.tag b{font-weight:800}.tag span{color:var(--accent);font-weight:900;font-size:12px}
+.bay.soldout .tag{opacity:.45}.bay.soldout .tag::after{content:"sold out";font-size:9px;color:var(--bad);font-weight:800}
+.bay.hot,.dock.hot,.belt.hot,.scanner.hot,.shelfwrap.hot{outline:4px solid var(--ok);outline-offset:-4px;background-color:rgba(63,143,107,.18)}
+.bay.hotbad{outline:4px solid var(--bad);outline-offset:-4px;background-color:rgba(194,37,59,.12)}
+.bay.pulse{animation:glow .9s ease-in-out 2}@keyframes glow{50%{background:rgba(242,182,50,.45);transform:scale(1.03)}}
+.dragpack{touch-action:none;cursor:grab}.dragpack.onshelf{touch-action:pan-x}.lifted{opacity:.25}
+.dgh{position:fixed;left:0;top:0;z-index:999;pointer-events:none;filter:drop-shadow(0 10px 8px rgba(0,0,0,.35));will-change:transform}
+.dgh svg{width:100%;height:auto;display:block}
+/* stock room */
+.stockroom{flex:0 0 auto;background:var(--wood);background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 2px,transparent 2px 14px);padding:7px 8px 8px;border-top:4px solid var(--wood-d)}
+.sr-head{display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:11.5px;letter-spacing:.06em;margin-bottom:5px}
+.sr-row{display:flex;justify-content:center;gap:6px;min-height:104px;padding:6px 4px;background:rgba(0,0,0,.2);border-radius:12px;align-items:flex-end}
+.trayitem{width:62px;display:flex;flex-direction:column;align-items:center}
+.trayitem svg{width:50px;height:67px}.trayitem small{color:#fff;font-size:10px;line-height:1.05;text-align:center;height:23px;overflow:hidden;margin-top:3px;font-weight:700}
+.allin{color:#fff;font-weight:800;align-self:center}
+/* basket dock */
+.dock{flex:0 0 auto;height:150px;position:relative;background:#f6e9cf;border-top:3px solid var(--line);transition:transform .15s}
+.dock.bump{animation:bump .3s}@keyframes bump{40%{transform:scale(1.025)}}
+.dock-art{position:absolute;left:10px;right:10px;top:34px;bottom:8px;opacity:.9}.dock-art svg{width:100%;height:100%}
+.dock-head{position:absolute;left:14px;right:14px;top:6px;display:flex;justify-content:space-between;font-size:12px;letter-spacing:.04em;z-index:2}.dock-head span{font-weight:800;color:var(--accent)}
+.contents{position:absolute;left:22px;right:22px;top:36px;bottom:12px;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:2px 5px;z-index:2}
+.bi{width:38px;height:51px}
+/* checkout */
+.card{background:#fff;border:2px solid var(--line);border-radius:14px;margin:8px 10px 0;padding:8px 10px}
+.card h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;color:#8c8076}
+.till{background:#2f3b4a;border-radius:14px;margin:8px 10px 0;padding:8px;font-family:"Courier New",monospace;color:#bfe9d1;flex:0 0 auto}
+.lcd{display:flex;justify-content:space-between;align-items:flex-end;background:#173125;border-radius:8px;padding:6px 10px;font-size:13px;line-height:1.2}
+.lcd small{opacity:.65;font-size:10px;letter-spacing:.08em}.lcd .r{text-align:right}.lcd .big{font-size:28px;font-weight:700;color:#7dffb4}.lcd .flash{animation:flash .6s 3}@keyframes flash{50%{opacity:.25}}
+.scanlog{padding:4px 6px 0;font-size:13px;min-height:44px}.scanlog>div{display:flex;justify-content:space-between}.scanlog>div:first-child{color:#7dffb4;font-weight:700}
+.items{display:flex;flex-wrap:wrap;gap:4px;min-height:46px;align-items:flex-end}
+.mi{width:38px;height:51px}.mi.sm{width:22px;height:30px}
+.beltrow{display:flex;gap:8px;margin:8px 10px 0;flex:0 0 auto}
+.belt{flex:1;height:88px;border-radius:12px;background:repeating-linear-gradient(90deg,#3b3f46 0 14px,#30333a 14px 28px);display:flex;align-items:center;gap:3px;padding:0 8px;overflow:hidden;color:#8d939c;font-size:13px}
+.belt.moving{animation:belt .8s linear infinite}@keyframes belt{to{background-position:28px 0}}
+.bt{flex:0 1 46px;min-width:20px;height:62px}
+.scanner{width:88px;height:88px;border-radius:12px;background:#1d2229;border:3px solid #596273;position:relative;display:grid;place-items:end center;padding-bottom:6px;color:#e6525e;font-size:12px;letter-spacing:.1em;overflow:hidden}
+.laser{position:absolute;left:8px;right:8px;height:3px;background:#ff3b4a;box-shadow:0 0 10px 3px rgba(255,59,74,.7);animation:laser 1.2s ease-in-out infinite alternate}@keyframes laser{from{top:12px}to{top:56px}}
+.bagged .items{min-height:34px}
+.hint{margin:8px 14px;font-weight:700;color:#6b5f55;text-align:center;font-size:14.5px}
+.signon{width:100%;max-width:360px;text-align:left;padding:16px}.signon p{margin:6px 0 12px}.signon input{margin-bottom:14px}
+.lcdtitle{background:#173125;color:#7dffb4;font-family:"Courier New",monospace;font-weight:700;padding:6px 10px;border-radius:8px;letter-spacing:.06em;font-size:14px}
+label{display:block;font-weight:800;font-size:13px;margin:14px 0 6px}label small{font-weight:600;color:#8c8076}
+input[type=text],input:not([type]),input[type=password]{width:100%;height:52px;border:3px solid #d8c9a8;border-radius:12px;padding:0 12px;font-size:18px;background:#fff;color:var(--ink)}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{width:100%;border:3px solid #d8c9a8;border-radius:12px;padding:10px;font-size:14px;font-family:"Courier New",monospace}
+/* tender */
+.due{text-align:center}.due small{font-size:11px;letter-spacing:.1em;color:#8c8076}.due .big{font-size:44px;font-weight:900;color:var(--accent);line-height:1.05}.due .paying{font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;align-items:center}
+.chip{border:2px solid var(--line);background:#fff7e6;border-radius:18px;padding:5px 11px;font-weight:800;font-size:14px}.chip.pop{animation:pop .3s}@keyframes pop{from{transform:scale(0)}}
+.status{margin-top:6px;font-weight:800;font-size:14px}.status.short{color:var(--bad)}.status.ok{color:var(--ok)}
+.dens{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;flex:0 0 auto}
+.den{height:60px;border:0;color:#fff;font-weight:900;font-size:19px;box-shadow:0 4px 0 rgba(0,0,0,.25);text-shadow:0 1px 1px rgba(0,0,0,.3)}.den:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.den.note{border-radius:8px;border:2px dashed rgba(255,255,255,.55)}.den.coin{border-radius:50%;width:60px;margin:0 auto;border:3px solid rgba(255,255,255,.5)}
+.d5000{background:#c2476b}.d2000{background:#8a63c7}.d1000{background:#d9692b}.d500{background:#3f8f6b}
+.d200{background:linear-gradient(135deg,#e0a21b 50%,#9aa3ad 50%)}.d100{background:#d9a21b}.d50,.d20,.d10{background:#9aa3ad}.d5{background:#aab2ba;font-size:16px}.d2,.d1{background:#b8693a}
+.reader{margin:10px;background:#2f3b4a;border-radius:16px;padding:14px;color:#fff}.reader.ok{background:#25543f}
+.rmsg{font-weight:800;text-align:center;margin-bottom:10px;font-size:15px}
+.track{height:74px;background:#10151b;border-radius:37px;position:relative;overflow:hidden;box-shadow:inset 0 4px 8px rgba(0,0,0,.6)}
+.arrows{position:absolute;right:20px;top:50%;transform:translateY(-50%);letter-spacing:.3em;color:#566174;font-weight:900;font-size:20px}
+.cardbtn{position:absolute;left:4px;top:5px;width:112px;height:62px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#2f3b4a);touch-action:none;cursor:grab;box-shadow:0 4px 8px rgba(0,0,0,.5);overflow:hidden;font-size:9px;font-weight:800;letter-spacing:.05em;padding:42px 0 0 8px}
+.cardbtn .stripe{position:absolute;left:0;right:0;top:9px;height:11px;background:#111}.cardbtn .chipc{position:absolute;right:10px;top:26px;width:18px;height:14px;border-radius:3px;background:#e9d96a}
+.pinbox{text-align:center}.pinbox input{text-align:center;letter-spacing:.35em;font-size:24px;margin:8px 0 12px}
+.shake{animation:shake .35s}@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* accept + receipt */
+.paid{margin:0;font-size:16px}.result p{margin:0 0 8px;font-size:16px}.result .change b{color:var(--ok);font-size:22px}
+.stamp{display:inline-block;border:4px solid var(--ok);color:var(--ok);font-weight:900;font-size:26px;padding:4px 14px;border-radius:10px;transform:rotate(-6deg);animation:stamp .35s}@keyframes stamp{from{transform:scale(2.4) rotate(-6deg);opacity:0}}
+.dots::after{content:"...";animation:dots 1s steps(4) infinite;display:inline-block;width:1.2em;text-align:left;overflow:hidden;vertical-align:bottom}@keyframes dots{from{width:0}to{width:1.2em}}
+.st6{background:#d8c9ae}.rscroll{flex:1;min-height:0;overflow-y:auto;padding:10px 0 14px;overscroll-behavior:contain}
+.printer{width:min(400px,94%);margin:0 auto;height:26px;background:#2f3b4a;border-radius:14px 14px 4px 4px;position:relative;z-index:2;box-shadow:0 4px 6px rgba(0,0,0,.3)}
+.printer i{position:absolute;left:14px;right:14px;bottom:5px;height:5px;border-radius:3px;background:#0b0e12}
+.paperwrap{width:min(380px,90%);margin:-3px auto 0;animation:reveal 2.2s steps(30) both;filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
+.paperwrap img{width:100%;display:block}.rtext{background:#fffdf7;padding:14px;font-size:12px;white-space:pre-wrap;margin:0}
+@keyframes reveal{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+.rbar{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px;background:#efe3cc}
+.rbar button{min-height:44px;border:2px solid var(--line);background:#fff;border-radius:12px;font-weight:800;font-size:13px}.rbar button:active{background:var(--line)}
+/* setup */
+.setup{background:var(--cream)}.tabs{display:flex;background:#fff;border-bottom:2px solid var(--line);flex:0 0 auto}
+.tab{flex:1;min-height:48px;border:0;border-bottom:4px solid transparent;background:none;font-weight:800;font-size:15px}.tab.on{color:var(--accent);border-color:var(--accent)}
+.panel{flex:1;min-height:0;overflow-y:auto;padding:4px 14px 18px;overscroll-behavior:contain}
+.logos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.lg{border:3px solid transparent;border-radius:50%;background:none;padding:0;line-height:0}.lg.on{border-color:var(--ink)}
+.sw{display:flex;flex-wrap:wrap;gap:8px}.swb{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line);padding:0;position:relative;overflow:hidden}.swb.on{box-shadow:0 0 0 3px var(--ink)}
+.swb.custom input{position:absolute;inset:-6px;opacity:0;width:60px;height:60px;cursor:pointer}
+.mini-rcpt{background:#fffdf7;border:2px solid var(--line);border-top:8px solid;border-radius:6px;text-align:center;padding:10px;line-height:1.3}.mini-rcpt b{display:block;font-size:20px}.mini-rcpt small{color:#8c8076}.mrl{line-height:0;margin-bottom:4px}
+.ilist{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.irow{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:6px 12px;min-height:56px;text-align:left}.irow svg{flex:0 0 auto}.in{flex:1;font-weight:800}.ip{font-weight:900;color:var(--accent)}
+.segm{display:flex;gap:6px;flex-wrap:wrap}.segm button{flex:1;min-height:46px;border:2px solid var(--line);background:#fff;border-radius:12px;font-weight:800;padding:0 10px}.segm button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.three{display:flex;gap:10px;margin-top:18px}
+.sheet-back{position:absolute;inset:0;background:rgba(30,20,10,.5);z-index:50;display:flex;align-items:flex-end}
+.sheet{background:var(--paper);width:100%;max-height:92%;overflow-y:auto;border-radius:22px 22px 0 0;padding:16px 16px calc(16px + var(--sb));animation:up .22s ease-out}@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sheet h3{margin:0 0 4px;font-size:21px}
+.prev{display:flex;align-items:center;gap:14px;justify-content:center;padding:10px;background:#f6e9cf;border-radius:14px;margin:8px 0}.ptag{background:#fff;border:2px solid #d8c9a8;border-radius:6px;padding:4px 10px;text-align:center}.ptag b,.ptag span{display:block}.ptag span{color:var(--accent);font-weight:900}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.opts button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:4px 2px;line-height:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:60px}.opts button.on{border-color:var(--ink);background:#fff7e6}.opts small{font-size:10px;font-weight:800}
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%) translateY(10px);background:#2f3b4a;color:#fff;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .25s,transform .25s;z-index:80;pointer-events:none;max-width:90%;text-align:center;font-weight:700;font-size:14px}
+#toast.show{opacity:1;transform:translateX(-50%)}
+@media (max-height:620px){.dock{height:128px}.sr-row{min-height:90px}.trayitem svg{width:42px;height:56px}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* ===== kawaii autumn theme ===== */
+html,body{background:#f0dcbc}
+#app{background-color:var(--cream);background-image:radial-gradient(circle,rgba(232,131,58,.10) 3px,transparent 4px);background-size:38px 38px}
+#bar{border-radius:0 0 22px 22px;box-shadow:0 4px 0 rgba(168,112,63,.18);z-index:3;position:relative}
+#role{border-radius:0 0 18px 18px;margin:0 10px;font-weight:700}
+.bname{color:var(--ink)}
+.btn{border-radius:24px;box-shadow:0 5px 0 rgba(120,60,20,.28)}
+.btn.ghost{border-width:3px;box-shadow:0 4px 0 var(--line)}
+.btn.m-cash{background:#7fa874}.btn.m-card{background:#6f93a8}.btn.alt{background:#7fa874}
+.actions{border-radius:22px 22px 0 0;box-shadow:0 -3px 0 var(--line);border-top:0}
+.card{border-radius:22px;border-width:3px;box-shadow:0 3px 0 rgba(168,112,63,.12)}
+.tag{border-radius:14px;border-color:#e6cfa8}
+.shelfwrap{background-color:#f7e3c6;background-image:radial-gradient(circle,rgba(217,138,154,.22) 4px,transparent 5px);background-size:30px 30px}
+.slots{border-radius:0 0 6px 6px}
+.stockroom{border-radius:22px 22px 0 0}.sr-row{border-radius:18px}
+.till{background:#5a3b2e;border-radius:22px}.lcd{background:#2f3a2a;border-radius:14px}
+.steps5 li{border-radius:16px;border-color:#efdcc0}
+.d5000{background:#d98a9a}.d2000{background:#a0688a}.d1000{background:#e8833a}.d500{background:#7fa874}.d100{background:#e0a93b}.d200{background:linear-gradient(135deg,#e0a93b 50%,#b3a79c 50%)}.d2,.d1{background:#bf7248}
+.reader{background:#5a3b2e;border-radius:22px}.reader.ok{background:#5d7f52}.track{background:#2f211b}
+.lcdtitle{background:#2f3a2a}
+.tlogo{filter:drop-shadow(0 6px 0 rgba(168,112,63,.25))}
+.sheet{border-radius:28px 28px 0 0}
+.tab.on{color:var(--accent)}
+.segm button.on{background:var(--accent)}
+/* falling leaves */
+.leaves{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.leaves i{position:absolute;top:-24px;width:15px;height:15px;background:var(--c);border-radius:0 100% 0 100%;opacity:.75;animation:fall 9s linear infinite}
+@keyframes fall{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(26px,420px) rotate(200deg)}100%{transform:translate(-10px,880px) rotate(400deg)}}
+.title,.handoff{position:relative}.title>*:not(.leaves),.handoff>*:not(.leaves){position:relative;z-index:1}
+/* slimmer basket */
+.dock{height:164px;background:transparent;border-top:0;display:flex;justify-content:center}
+.dock-art{left:50%;right:auto;transform:translateX(-50%);width:min(250px,72%);top:2px;bottom:2px;opacity:1}
+.dock-head{left:12px;right:12px;top:4px}
+.dock.bump{animation:bump .3s}
+.contents{left:50%;right:auto;transform:translateX(-50%);width:min(172px,50%);top:58px;bottom:12px;gap:2px 3px;align-content:flex-start}
+.contents .bi{width:38px;height:51px}.contents.cs2 .bi{width:30px;height:40px}.contents.cs3 .bi{width:26px;height:35px}.contents.cs4 .bi{width:22px;height:29px}
+.dock.hot{outline:4px dashed var(--ok);outline-offset:-4px;background-color:rgba(111,154,100,.15);border-radius:20px}
+/* scanned tray + bag outline */
+.scannedcard .items{min-height:56px}
+.mi{width:38px;height:51px}
+.bagcard h4{display:flex;justify-content:space-between;align-items:center}
+.bagcard .kind{display:flex;gap:4px}.bagcard .kind button{border:2px solid var(--line);background:#fff;border-radius:12px;font-weight:800;font-size:11px;padding:3px 10px;color:var(--ink)}.bagcard .kind button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.bagzone{position:relative;height:136px;display:flex;justify-content:center;border-radius:18px}
+.bagzone.hot{outline:4px dashed var(--ok);outline-offset:-2px;background:rgba(111,154,100,.16)}
+.bag-art{position:absolute;inset:0;display:flex;justify-content:center}.bag-art svg{height:100%;width:auto}
+.bag-items{position:absolute;left:50%;transform:translateX(-50%);bottom:30px;width:104px;display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-end;gap:2px;pointer-events:none}
+.bgi{width:28px;height:37px}.bz2 .bgi{width:22px;height:29px}.bz3 .bgi{width:17px;height:23px}.bgi svg{width:100%;height:100%;display:block}
+@media (max-height:700px){.bagzone{height:112px}.dock{height:140px}}
+.btn.big{flex-direction:column;gap:0}
+
+/* ===== Hendricks & Piper brand + red panda ===== */
+#tip{flex:0 0 auto;display:flex;align-items:flex-end;gap:6px;padding:6px 12px 0;position:relative;z-index:2}
+#tip[hidden]{display:none}
+#tip .panda,.welcome .panda{flex:0 0 auto;border:0;background:none;padding:0;line-height:0;filter:drop-shadow(0 3px 0 rgba(168,112,63,.22))}
+#tip .panda.hop svg{animation:hop .6s ease-out}@keyframes hop{30%{transform:translateY(-9px) rotate(-6deg)}60%{transform:translateY(0)}80%{transform:translateY(-3px)}}
+.bubble{flex:1;position:relative;background:#fff;border:3px solid var(--line);border-radius:18px;padding:6px 12px;font-weight:700;font-size:13.5px;line-height:1.25;margin-bottom:6px;color:var(--ink);box-shadow:0 3px 0 rgba(168,112,63,.12)}
+.bubble::before{content:"";position:absolute;left:-10px;bottom:12px;width:14px;height:14px;background:#fff;border-left:3px solid var(--line);border-bottom:3px solid var(--line);transform:rotate(45deg);border-radius:0 0 0 4px}
+.brand{display:flex;align-items:center;gap:10px;margin:2px 0 0}
+.brand .bw{display:flex;flex-direction:column;text-align:left;line-height:1.1}.brand b{font-size:17px;letter-spacing:.14em;color:var(--ink)}.brand small{font-size:11px;letter-spacing:.2em;color:#a39688;text-transform:uppercase}
+.welcome{display:flex;align-items:flex-end;gap:6px;width:100%;max-width:380px;margin:0 0 12px}.welcome .bubble{text-align:left}
+.brandline{text-align:center;letter-spacing:.12em;font-size:11.5px;text-transform:uppercase;margin-top:2px}
+.bagzone{height:122px}.scanlog{min-height:40px}
+@media (max-height:700px){#tip .bubble{font-size:12.5px;padding:4px 10px}#tip .panda svg{width:44px;height:44px}}
+.scanlog{min-height:28px}.bagzone{height:112px}.belt{height:78px}.scanner{width:80px;height:78px}.bt{height:54px}.laser{animation-name:laser2}@keyframes laser2{from{top:10px}to{top:46px}}
+
+/* on-screen PIN keypad */
+.reader.done .track{display:none}.reader.done{padding:10px}.reader.done .rmsg{margin:0}
+.pinbox{padding-bottom:12px}
+.pindots{display:flex;justify-content:center;gap:14px;margin:6px 0 12px;padding:10px;background:#2f3a2a;border-radius:16px}
+.pindots i{width:20px;height:20px;border-radius:50%;border:3px solid #7dffb4;opacity:.55}.pindots i.on{background:#7dffb4;opacity:1;box-shadow:0 0 10px #7dffb4}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-width:300px;margin:0 auto}
+.key{height:58px;border:0;border-radius:20px;background:#fff7e6;color:var(--ink);font-size:26px;font-weight:900;box-shadow:0 5px 0 #e0c9a2;border:3px solid #efdcc0}
+.key:active{transform:translateY(4px);box-shadow:0 1px 0 #e0c9a2;background:#ffe9c4}
+.key.clr{background:#f6d3d8;box-shadow:0 5px 0 #e1aab4;border-color:#f0bcc5}.key.ok{background:#7fa874;color:#fff;box-shadow:0 5px 0 #587a50;border-color:#8fb585;font-size:22px}
+
+/* v1.4 one-press bagging */
+.scanrow{display:flex;align-items:center;gap:8px}.scanrow .items{flex:1;min-height:56px}
+.minibag{position:relative;flex:0 0 74px;height:70px;line-height:0}.minibag svg{width:100%;height:100%}
+.minibag.ready{animation:bagbob 1s ease-in-out infinite}@keyframes bagbob{50%{transform:translateY(-4px) rotate(-3deg)}}
+.minibag.wob{animation:none}.minibag.wob svg{animation:bagwob .26s ease-out}@keyframes bagwob{30%{transform:scale(1.14,.9)}70%{transform:scale(.95,1.06)}}
+.minibag .bagcount{position:absolute;right:-2px;top:-4px;background:var(--ok);color:#fff;font-weight:800;font-size:13px;line-height:1;border:3px solid #fff;border-radius:14px;padding:4px 7px}
+.minibag.full{animation:none}
+.sc{pointer-events:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="bar"></header>
+  <div id="role" hidden></div>
+  <div id="tip" hidden></div>
+  <main id="view"></main>
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+<script id="content-pack" type="application/json">{"meta":{"id":"pass-the-basket","title":"Pass the Basket","version":"1.4","author":"Jon","brand":"Hendricks & Piper"},"settings":{"storeName":"Corner Shop","bayCapacity":2,"deliveryItems":8,"basketMax":12,"handoffs":true,"currency":"£","tips":true},"defaults":{"logoId":"basket","logoBg":"#e8833a"},"logos":[{"id":"basket","name":"Basket"},{"id":"cart","name":"Trolley"},{"id":"apple","name":"Apple"},{"id":"loaf","name":"Loaf"},{"id":"cup","name":"Cuppa"},{"id":"star","name":"Star"},{"id":"leaf","name":"Leaf"},{"id":"heart","name":"Heart"},{"id":"paw","name":"Paw"}],"logoBgs":["#e8833a","#6f9a64","#d98a9a","#e0a93b","#a0688a","#6a4634","#6f93a8","#c4572f"],"palette":["#c4572f","#e8833a","#e6b04a","#efd78a","#9db68c","#6f9a64","#8fc1c4","#6f93a8","#a0688a","#e7a0a8","#6a4634","#f6ead6","#ffffff","#4a3a33"],"denoms":[5000,2000,1000,500,200,100,50,20,10,5,2,1],"items":[{"id":"tea","name":"Tea Bags","price":250,"shape":"box","c1":"#c4572f","c2":"#e6b04a","pattern":"band"},{"id":"oatmilk","name":"Oat Milk","price":180,"shape":"carton","c1":"#f6ead6","c2":"#6f9a64","pattern":"stripe"},{"id":"beans","name":"Baked Beans","price":85,"shape":"can","c1":"#e8833a","c2":"#f6ead6","pattern":"band"},{"id":"cornflakes","name":"Corn Flakes","price":220,"shape":"box","c1":"#e6b04a","c2":"#d98a9a","pattern":"dots"},{"id":"spaghetti","name":"Spaghetti","price":110,"shape":"bag","c1":"#efd78a","c2":"#c4572f","pattern":"stripe"},{"id":"jam","name":"Strawberry Jam","price":195,"shape":"jar","c1":"#c4572f","c2":"#f6ead6","pattern":"check"},{"id":"oj","name":"Orange Juice","price":160,"shape":"carton","c1":"#e8833a","c2":"#ffffff","pattern":"split"},{"id":"crisps","name":"Salty Crisps","price":100,"shape":"bag","c1":"#6f93a8","c2":"#e6b04a","pattern":"zig"},{"id":"biscuits","name":"Choc Biscuits","price":140,"shape":"box","c1":"#6a4634","c2":"#f6ead6","pattern":"stripe"},{"id":"honey","name":"Runny Honey","price":320,"shape":"jar","c1":"#e6b04a","c2":"#ffffff","pattern":"band"},{"id":"soup","name":"Tomato Soup","price":95,"shape":"can","c1":"#c4572f","c2":"#ffffff","pattern":"split"},{"id":"wash","name":"Washing Liquid","price":450,"shape":"bottle","c1":"#8fc1c4","c2":"#ffffff","pattern":"band"},{"id":"rice","name":"Long Grain Rice","price":190,"shape":"bag","c1":"#f6ead6","c2":"#6f9a64","pattern":"dots"},{"id":"lemonade","name":"Lemonade","price":70,"shape":"bottle","c1":"#efd78a","c2":"#6f9a64","pattern":"stripe"},{"id":"choc","name":"Milk Chocolate","price":125,"shape":"box","c1":"#a0688a","c2":"#e6b04a","pattern":"check"},{"id":"water","name":"Sparkling Water","price":60,"shape":"bottle","c1":"#b9dde0","c2":"#6f93a8","pattern":"dots"},{"id":"pbutter","name":"Peanut Butter","price":230,"shape":"jar","c1":"#b87a3d","c2":"#c4572f","pattern":"band"},{"id":"catfood","name":"Cat Food","price":65,"shape":"can","c1":"#8a9a55","c2":"#e6b04a","pattern":"stripe"}]}</script>
+<script>/* Pass the Basket: DOM-free game logic. Loadable in Node for tests. */
+(function (root) {
+  'use strict';
+  const SHAPES = ['box', 'bottle', 'can', 'bag', 'jar', 'carton'];
+  const PATTERNS = ['plain', 'stripe', 'band', 'dots', 'split', 'check', 'zig'];
+  const HEX = /^#[0-9a-fA-F]{6}$/;
+
+  /* ---------- seeded RNG ---------- */
+  function hash(str) {
+    let h = 1779033703 ^ str.length;
+    for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909);
+    return (h ^= h >>> 16) >>> 0;
+  }
+  function mulberry(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function rngFrom(seed) { return mulberry(hash(String(seed))); }
+  function shuffle(arr, rng) {
+    for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); const t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+    return arr;
+  }
+
+  /* ---------- money ---------- */
+  function money(p, cur) {
+    cur = cur || '£';
+    const neg = p < 0; p = Math.abs(Math.round(p));
+    return (neg ? '-' : '') + cur + Math.floor(p / 100) + '.' + String(p % 100).padStart(2, '0');
+  }
+  function denomLabel(d) { return d >= 100 ? '£' + (d / 100) : d + 'p'; }
+  function parsePrice(str) {
+    const s = String(str == null ? '' : str).replace(/[£\s]/g, '').replace(',', '.');
+    if (!/^\d*\.?\d{0,2}$/.test(s) || s === '' || s === '.') return NaN;
+    const p = Math.round(parseFloat(s) * 100);
+    return p >= 1 && p <= 99999 ? p : NaN;
+  }
+  /* greedy breakdown of an amount into denominations: [{d, n}] */
+  function denomsFor(amount, denoms) {
+    const out = []; let left = Math.max(0, Math.round(amount));
+    denoms.slice().sort((a, b) => b - a).forEach(d => { const n = Math.floor(left / d); if (n) { out.push({ d, n }); left -= n * d; } });
+    return out;
+  }
+  function tenderTotal(map) { let t = 0; Object.keys(map || {}).forEach(k => { t += (+k) * (map[k] | 0); }); return t; }
+
+  function two(n) { return String(n).padStart(2, '0'); }
+  function fmtDate(d) { return two(d.getDate()) + '/' + two(d.getMonth() + 1) + '/' + d.getFullYear(); }
+  function fmtTime(d) { return two(d.getHours()) + ':' + two(d.getMinutes()); }
+
+  /* ---------- shelf layout ---------- */
+  function layout(items) {
+    const n = Math.max(1, items.length);
+    const per = Math.max(4, Math.ceil(n / 3));
+    const rows = Math.ceil(n / per);
+    const bays = items.map((it, i) => ({ item: it.id, row: Math.floor(i / per), col: i % per }));
+    return { per, rows, bays };
+  }
+
+  /* ---------- validation / sanitising ---------- */
+  function cleanText(s, max) { return String(s == null ? '' : s).replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, max); }
+  function sanitizeItem(raw, fallbackId) {
+    if (!raw || typeof raw !== 'object') return null;
+    const name = cleanText(raw.name, 24);
+    const price = Number.isInteger(raw.price) ? raw.price : NaN;
+    if (!name || !(price >= 1 && price <= 99999)) return null;
+    let id = String(raw.id || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 24);
+    if (!id) id = fallbackId;
+    return {
+      id, name, price,
+      shape: SHAPES.includes(raw.shape) ? raw.shape : 'box',
+      c1: HEX.test(raw.c1) ? raw.c1.toLowerCase() : '#e8743b',
+      c2: HEX.test(raw.c2) ? raw.c2.toLowerCase() : '#f4ead2',
+      pattern: PATTERNS.includes(raw.pattern) ? raw.pattern : 'plain'
+    };
+  }
+  function itemProblems(items) {
+    const p = []; const seen = {};
+    if (!Array.isArray(items) || items.length < 4) p.push('need at least 4 items');
+    (items || []).forEach((it, i) => {
+      if (!it.name) p.push('item ' + i + ' has no name');
+      if (!(Number.isInteger(it.price) && it.price > 0)) p.push(it.id + ': bad price');
+      if (!SHAPES.includes(it.shape)) p.push(it.id + ': bad shape');
+      if (!PATTERNS.includes(it.pattern)) p.push(it.id + ': bad pattern');
+      if (!HEX.test(it.c1) || !HEX.test(it.c2)) p.push(it.id + ': bad colour');
+      if (seen[it.id]) p.push('duplicate id ' + it.id);
+      seen[it.id] = 1;
+    });
+    return p;
+  }
+
+  function create(pack) {
+    const P = pack;
+    function defaultState() {
+      return {
+        v: 1,
+        store: { name: P.settings.storeName, logoId: P.defaults.logoId, logoBg: P.defaults.logoBg },
+        items: P.items.map(i => Object.assign({}, i)),
+        settings: { bayCapacity: P.settings.bayCapacity, deliveryItems: P.settings.deliveryItems, basketMax: P.settings.basketMax, handoffs: P.settings.handoffs, tips: P.settings.tips !== false },
+        shelf: {}, basket: [], operator: '', receiptNo: 1
+      };
+    }
+    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+    const capacity = S => clamp(S.settings.bayCapacity | 0 || 2, 1, 3);
+    const itemById = (S, id) => S.items.find(i => i.id === id);
+    const totalStock = S => S.items.reduce((t, i) => t + (S.shelf[i.id] || 0), 0);
+
+    function makeDelivery(S, seed) {
+      const cap = capacity(S), rng = rngFrom(seed);
+      const need = shuffle(S.items.filter(i => (S.shelf[i.id] || 0) < cap), rng).slice(0, clamp(S.settings.deliveryItems | 0, 1, 40));
+      const out = [];
+      need.forEach(i => { for (let k = S.shelf[i.id] || 0; k < cap; k++) out.push(i.id); });
+      return shuffle(out, rng);
+    }
+    function stock(S, id) {
+      if (!itemById(S, id) || (S.shelf[id] || 0) >= capacity(S)) return false;
+      S.shelf[id] = (S.shelf[id] || 0) + 1; return true;
+    }
+    function pick(S, id) {
+      if (!itemById(S, id) || (S.shelf[id] || 0) <= 0 || S.basket.length >= clamp(S.settings.basketMax | 0, 1, 24)) return false;
+      S.shelf[id]--; S.basket.push(id); return true;
+    }
+    function putBack(S, idx) {
+      if (idx < 0 || idx >= S.basket.length) return false;
+      const id = S.basket.splice(idx, 1)[0];
+      S.shelf[id] = (S.shelf[id] || 0) + 1; return true;
+    }
+    function returnBasket(S) { while (S.basket.length) putBack(S, 0); }
+
+    function lines(S, ids) {
+      const order = [], map = {};
+      ids.forEach(id => {
+        const it = itemById(S, id); if (!it) return;
+        if (!map[id]) { map[id] = { id, name: it.name, unit: it.price, qty: 0, total: 0 }; order.push(id); }
+        map[id].qty++; map[id].total += it.price;
+      });
+      return order.map(id => map[id]);
+    }
+    const total = (S, ids) => ids.reduce((t, id) => t + (itemById(S, id) ? itemById(S, id).price : 0), 0);
+
+    function sanitizeState(obj) {
+      const D = defaultState();
+      if (!obj || typeof obj !== 'object') throw new Error('Not a save file');
+      if (obj.format && obj.format !== 'pass-the-basket') throw new Error('Not a Pass the Basket save');
+      const S = D;
+      if (obj.store) {
+        S.store.name = cleanText(obj.store.name, 28) || D.store.name;
+        if (P.logos.some(l => l.id === obj.store.logoId)) S.store.logoId = obj.store.logoId;
+        if (HEX.test(obj.store.logoBg)) S.store.logoBg = obj.store.logoBg.toLowerCase();
+      }
+      if (Array.isArray(obj.items)) {
+        const seen = {}, items = [];
+        obj.items.slice(0, 60).forEach((r, i) => {
+          const it = sanitizeItem(r, 'item' + (i + 1)); if (!it) return;
+          let id = it.id, k = 2; while (seen[id]) id = it.id + k++;
+          it.id = id; seen[id] = 1; items.push(it);
+        });
+        if (items.length >= 4) S.items = items;
+      }
+      const st = obj.settings || {};
+      S.settings.bayCapacity = clamp(parseInt(st.bayCapacity, 10) || D.settings.bayCapacity, 1, 3);
+      S.settings.deliveryItems = clamp(parseInt(st.deliveryItems, 10) || D.settings.deliveryItems, 1, 40);
+      S.settings.basketMax = clamp(parseInt(st.basketMax, 10) || D.settings.basketMax, 1, 24);
+      S.settings.handoffs = st.handoffs === undefined ? D.settings.handoffs : !!st.handoffs;
+      S.settings.tips = st.tips === undefined ? D.settings.tips : !!st.tips;
+      const cap = capacity(S);
+      S.shelf = {};
+      if (obj.shelf && typeof obj.shelf === 'object') S.items.forEach(i => { const n = parseInt(obj.shelf[i.id], 10); if (n > 0) S.shelf[i.id] = Math.min(cap, n); });
+      S.receiptNo = clamp(parseInt(obj.receiptNo, 10) || 1, 1, 999999);
+      S.operator = cleanText(obj.operator, 16);
+      return S;
+    }
+    function serialize(S) {
+      return { format: 'pass-the-basket', version: 1, store: S.store, items: S.items, settings: S.settings, shelf: S.shelf, receiptNo: S.receiptNo, operator: S.operator };
+    }
+
+    /* ---------- receipts ---------- */
+    function receiptModel(S, sale) {
+      const ls = lines(S, sale.ids);
+      return {
+        store: S.store.name, logoId: S.store.logoId, logoBg: S.store.logoBg,
+        no: sale.no, date: sale.date, operator: sale.operator || 'Operator',
+        lines: ls, count: sale.ids.length, total: total(S, sale.ids),
+        method: sale.method, tendered: sale.tendered || 0, change: sale.change || 0
+      };
+    }
+    const dateStr = fmtDate, timeStr = fmtTime;
+    function receiptText(m) {
+      const W = 32, rule = '-'.repeat(W);
+      const pad = (l, r) => { l = String(l); r = String(r); const sp = Math.max(1, W - l.length - r.length); return l + ' '.repeat(sp) + r; };
+      const out = [m.store.toUpperCase(), rule, 'Receipt #' + String(m.no).padStart(4, '0'), dateStr(m.date) + '  ' + timeStr(m.date), 'Served by: ' + m.operator, rule];
+      m.lines.forEach(l => { out.push(pad((l.qty > 1 ? l.qty + ' x ' : '') + l.name, money(l.total))); if (l.qty > 1) out.push('    @ ' + money(l.unit) + ' each'); });
+      out.push(rule, pad('ITEMS', m.count), pad('TOTAL', money(m.total)), rule);
+      if (m.method === 'cash') { out.push(pad('CASH TENDERED', money(m.tendered))); out.push(pad('CHANGE', money(m.change))); }
+      else out.push(pad('CARD (PIN VERIFIED)', money(m.total)));
+      out.push(rule, 'Thank you for shopping at', m.store + '!', 'See you again soon.', '', 'a Hendricks & Piper game');
+      return out.join('\n');
+    }
+
+    return { P, SHAPES, PATTERNS, defaultState, capacity, itemById, totalStock, makeDelivery, stock, pick, putBack, returnBasket, lines, total, sanitizeState, serialize, receiptModel, receiptText, dateStr, timeStr };
+  }
+
+  const API = { fmtDate, fmtTime, create, money, denomLabel, parsePrice, denomsFor, tenderTotal, layout, rngFrom, shuffle, itemProblems, sanitizeItem, SHAPES, PATTERNS, HEX };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.PBCore = API;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* Pass the Basket: SVG art drawn in code (packs, logos). No image files. */
+(function (root) {
+  'use strict';
+  let uid = 0;
+  function shade(hex, f) {
+    const n = parseInt(hex.slice(1), 16);
+    let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    const t = f < 0 ? 0 : 255, p = Math.abs(f);
+    r = Math.round((t - r) * p + r); g = Math.round((t - g) * p + g); b = Math.round((t - b) * p + b);
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  /* body outline per shape in a 60x80 viewBox, plus a lid/cap drawn on top */
+  const BODY = {
+    box: 'M8 14H52a3 3 0 0 1 3 3V74a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V17a3 3 0 0 1 3-3Z',
+    carton: 'M10 26L17 9H43L50 26V74a3 3 0 0 1-3 3H13a3 3 0 0 1-3-3Z',
+    bottle: 'M24 22C24 29 10 29 10 41V72a5 5 0 0 0 5 5H45a5 5 0 0 0 5-5V41C50 29 36 29 36 22Z',
+    can: 'M10 10V70a20 5 0 0 0 40 0V10Z',
+    bag: 'M8 14L12 9 16 14 20 9 24 14 28 9 32 14 36 9 40 14 44 9 48 14 52 9V14Q58 46 52 76H8Q2 46 8 14Z',
+    jar: 'M12 20H48a4 4 0 0 1 4 4V72a5 5 0 0 1-5 5H13a5 5 0 0 1-5-5V24a4 4 0 0 1 4-4Z'
+  };
+  function top(shape, c2) {
+    const d = shade(c2, -0.25);
+    switch (shape) {
+      case 'box': return '<rect x="5" y="14" width="50" height="8" rx="3" fill="' + d + '" opacity=".55"/>';
+      case 'carton': return '<rect x="24" y="4" width="12" height="6" rx="2" fill="' + c2 + '" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>';
+      case 'bottle': return '<rect x="22" y="3" width="16" height="9" rx="2.5" fill="' + c2 + '" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/><rect x="25" y="12" width="10" height="10" fill="rgba(255,255,255,.35)"/>';
+      case 'can': return '<ellipse cx="30" cy="10" rx="20" ry="5" fill="#d7dce2" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/><ellipse cx="30" cy="10" rx="13" ry="3" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="1"/>';
+      case 'jar': return '<rect x="14" y="6" width="32" height="14" rx="3.5" fill="' + c2 + '" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/><path d="M18 10V16M24 10V16M30 10V16M36 10V16M42 10V16" stroke="rgba(0,0,0,.18)" stroke-width="1.5"/>';
+      default: return '';
+    }
+  }
+  function pattern(p, c2) {
+    const o = '.6'; let s = '';
+    if (p === 'stripe') for (let x = 4; x < 60; x += 12) s += '<rect x="' + x + '" y="0" width="6" height="80" fill="' + c2 + '" opacity="' + o + '"/>';
+    else if (p === 'band') s = '<rect x="0" y="26" width="60" height="9" fill="' + c2 + '" opacity="' + o + '"/><rect x="0" y="64" width="60" height="6" fill="' + c2 + '" opacity="' + o + '"/>';
+    else if (p === 'dots') for (let y = 14, r = 0; y < 80; y += 11, r++) for (let x = (r % 2 ? 5 : 11); x < 60; x += 12) s += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="' + c2 + '" opacity="' + o + '"/>';
+    else if (p === 'split') s = '<rect x="30" y="0" width="30" height="80" fill="' + c2 + '" opacity="' + o + '"/>';
+    else if (p === 'check') for (let y = 0; y < 80; y += 10) for (let x = (y / 10) % 2 ? 0 : 10; x < 60; x += 20) s += '<rect x="' + x + '" y="' + y + '" width="10" height="10" fill="' + c2 + '" opacity=".5"/>';
+    else if (p === 'zig') for (let y = 20; y < 80; y += 14) { let d = 'M0 ' + y; for (let x = 0; x < 64; x += 8) d += 'L' + (x + 4) + ' ' + (y + (x / 8 % 2 ? 0 : 6)) + 'L' + (x + 8) + ' ' + y; s += '<path d="' + d + '" fill="none" stroke="' + c2 + '" stroke-width="3" opacity=".7"/>'; }
+    return s;
+  }
+  function face(cx, cy) {
+    const k = '#5a3b2e';
+    return '<circle cx="' + (cx - 6) + '" cy="' + (cy - 1) + '" r="2" fill="' + k + '"/><circle cx="' + (cx + 6) + '" cy="' + (cy - 1) + '" r="2" fill="' + k + '"/>' +
+      '<path d="M' + (cx - 2.6) + ' ' + (cy + 2.4) + 'Q' + cx + ' ' + (cy + 5.4) + ' ' + (cx + 2.6) + ' ' + (cy + 2.4) + '" fill="none" stroke="' + k + '" stroke-width="1.4" stroke-linecap="round"/>' +
+      '<ellipse cx="' + (cx - 11) + '" cy="' + (cy + 2.6) + '" rx="2.8" ry="1.8" fill="#f09aa8" opacity=".75"/><ellipse cx="' + (cx + 11) + '" cy="' + (cy + 2.6) + '" rx="2.8" ry="1.8" fill="#f09aa8" opacity=".75"/>';
+  }
+  /* item = {shape, c1, c2, pattern}; opts.w / opts.h optional pixel size */
+  function pack(item, opts) {
+    opts = opts || {};
+    const id = 'pk' + (++uid), body = BODY[item.shape] || BODY.box;
+    const label = item.shape === 'bottle' ? [15, 44, 30, 22] : [14, 34, 32, 24];
+    const dim = opts.w ? ' width="' + opts.w + '" height="' + (opts.h || Math.round(opts.w * 4 / 3)) + '"' : '';
+    return '<svg class="pk" viewBox="0 0 60 80"' + dim + ' xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+      '<defs><clipPath id="' + id + '"><path d="' + body + '"/></clipPath></defs>' +
+      '<path d="' + body + '" fill="' + item.c1 + '"/>' +
+      '<g clip-path="url(#' + id + ')">' + pattern(item.pattern, item.c2) +
+      '<rect x="0" y="0" width="14" height="80" fill="#fff" opacity=".16"/><rect x="46" y="0" width="14" height="80" fill="#000" opacity=".10"/></g>' +
+      '<rect x="' + label[0] + '" y="' + label[1] + '" width="' + label[2] + '" height="' + label[3] + '" rx="6" fill="#fff" opacity=".93"/>' +
+      face(label[0] + label[2] / 2, label[1] + label[3] / 2) +
+      '<path d="' + body + '" fill="none" stroke="rgba(90,59,46,.5)" stroke-width="2"/>' +
+      top(item.shape, item.c2) + '</svg>';
+  }
+
+  /* logos: white icon on a coloured circle, viewBox 100x100 */
+  const ICONS = {
+    basket: '<path d="M30 48Q50 12 70 48" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M20 48H80L71 79H29Z" fill="#fff"/><path d="M38 54V73M50 54V73M62 54V73" stroke="BG" stroke-width="4" stroke-linecap="round"/>',
+    cart: '<path d="M16 28H30L38 62H72L81 36H33" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="42" cy="75" r="6.5" fill="#fff"/><circle cx="69" cy="75" r="6.5" fill="#fff"/>',
+    apple: '<path d="M50 35C36 26 19 37 24 58C28 74 41 81 50 75C59 81 72 74 76 58C81 37 64 26 50 35Z" fill="#fff"/><path d="M50 35C50 25 56 18 66 17C66 28 60 35 50 35Z" fill="#fff"/>',
+    loaf: '<path d="M22 54C12 40 27 27 50 27C73 27 88 40 78 54V74H22Z" fill="#fff"/><path d="M36 38L42 50M50 36L56 49M64 38L70 50" stroke="BG" stroke-width="4" stroke-linecap="round"/>',
+    cup: '<path d="M24 38H66V60C66 72 58 79 45 79C32 79 24 72 24 60Z" fill="#fff"/><path d="M66 44H72a8 8 0 0 1 0 17H65" fill="none" stroke="#fff" stroke-width="5"/><path d="M36 30Q31 24 36 18M48 30Q43 24 48 18M60 30Q55 24 60 18" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>',
+    star: '<path d="M50 16L60.5 38.5 85 42 67 59 71.5 83.5 50 71.5 28.5 83.5 33 59 15 42 39.5 38.5Z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>',
+    leaf: '<path d="M24 77C19 40 44 21 79 21C79 57 61 79 24 77Z" fill="#fff"/><path d="M30 71L63 37" stroke="BG" stroke-width="4" stroke-linecap="round"/>',
+    heart: '<path d="M50 80C19 57 17 34 33 27C42 24 48 29 50 36C52 29 58 24 67 27C83 34 81 57 50 80Z" fill="#fff"/>',
+    paw: '<ellipse cx="50" cy="63" rx="19" ry="15" fill="#fff"/><circle cx="26" cy="46" r="8" fill="#fff"/><circle cx="41" cy="33" r="8.5" fill="#fff"/><circle cx="59" cy="33" r="8.5" fill="#fff"/><circle cx="74" cy="46" r="8" fill="#fff"/>'
+  };
+  function logo(id, bg, size, plain, withFace) {
+    let icon = (ICONS[id] || ICONS.basket).replace(/BG/g, bg);
+    if (withFace && id === 'basket') icon = icon.replace(/<path d="M38 54V73[^>]*>/, '') + '<circle cx="41" cy="63" r="3" fill="#5a3b2e"/><circle cx="59" cy="63" r="3" fill="#5a3b2e"/><path d="M46 67Q50 72 54 67" fill="none" stroke="#5a3b2e" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="35" cy="68" rx="4" ry="2.6" fill="#f09aa8"/><ellipse cx="65" cy="68" rx="4" ry="2.6" fill="#f09aa8"/>';
+    const dim = size ? ' width="' + size + '" height="' + size + '"' : '';
+    return '<svg class="logo" viewBox="0 0 100 100"' + dim + ' xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+      (plain ? '' : '<circle cx="50" cy="50" r="48" fill="' + bg + '"/><circle cx="50" cy="50" r="48" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3"/>') + icon + '</svg>';
+  }
+
+  /* slim wicker basket with a handle and a sleepy face */
+  function basketArt() {
+    const k = '#5a3b2e', br = '#a8703f';
+    return '<svg viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+      '<path d="M56 46C56 -4 144 -4 144 46" fill="none" stroke="' + br + '" stroke-width="9" stroke-linecap="round"/>' +
+      '<path d="M34 46H166L154 120Q153 126 147 126H53Q47 126 46 120Z" fill="#e6b07a" stroke="' + br + '" stroke-width="4" stroke-linejoin="round"/>' +
+      '<path d="M38 72H162M42 98H158M70 48L66 124M100 48V126M130 48L134 124" stroke="' + br + '" stroke-width="2.4" opacity=".4"/>' +
+      '<rect x="27" y="40" width="146" height="14" rx="7" fill="#d9a066" stroke="' + br + '" stroke-width="4"/>' +
+      '<circle cx="84" cy="106" r="3" fill="' + k + '"/><circle cx="116" cy="106" r="3" fill="' + k + '"/><path d="M95 109Q100 115 105 109" fill="none" stroke="' + k + '" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<ellipse cx="74" cy="112" rx="5" ry="3" fill="#f09aa8" opacity=".85"/><ellipse cx="126" cy="112" rx="5" ry="3" fill="#f09aa8" opacity=".85"/></svg>';
+  }
+  /* dashed outline of a paper bag or a box to drop scanned items into */
+  function bagArt(kind) {
+    const k = '#5a3b2e', face = '<circle cx="66" cy="112" r="2.6" fill="' + k + '"/><circle cx="94" cy="112" r="2.6" fill="' + k + '"/><path d="M75 114Q80 120 85 114" fill="none" stroke="' + k + '" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="57" cy="117" rx="4" ry="2.6" fill="#f09aa8"/><ellipse cx="103" cy="117" rx="4" ry="2.6" fill="#f09aa8"/>';
+    const st = 'stroke="#a8703f" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round"';
+    const shape = kind === 'box'
+      ? '<path d="M22 44H138V124H22Z" fill="#f3d9b0" ' + st + '/><path d="M22 44L10 22H66V44M138 44L150 22H94V44" fill="#ecc994" ' + st + '/>'
+      : '<path d="M30 30H130L138 124H22Z" fill="#f3d9b0" ' + st + '/><path d="M30 30L42 12H118L130 30" fill="#ecc994" ' + st + '/><path d="M52 12C52 -2 108 -2 108 12" fill="none" ' + st + '/>';
+    return '<svg viewBox="0 0 160 130" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + shape + face + '</svg>';
+  }
+
+
+  /* small solid paper shopping bag with a kawaii face; `full` makes pack tops peek out */
+  function shopBag(full) {
+    const k = '#5a3b2e';
+    const peek = full ? '<rect x="40" y="26" width="20" height="26" rx="4" fill="#e8833a"/><rect x="64" y="20" width="22" height="32" rx="4" fill="#6f9a64"/><rect x="90" y="28" width="20" height="24" rx="4" fill="#c9a0dc"/>' : '';
+    return '<svg viewBox="0 0 150 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + peek +
+      '<path d="M52 40C52 6 98 6 98 40" fill="none" stroke="#a8703f" stroke-width="5" stroke-linecap="round"/>' +
+      '<path d="M26 42H124L132 132H18Z" fill="#f3d9b0" stroke="#a8703f" stroke-width="4" stroke-linejoin="round"/>' +
+      '<path d="M26 42H124L126 58H24Z" fill="#ecc994" stroke="#a8703f" stroke-width="4" stroke-linejoin="round"/>' +
+      '<circle cx="56" cy="92" r="4" fill="' + k + '"/><circle cx="94" cy="92" r="4" fill="' + k + '"/><path d="M68 98Q75 108 82 98" fill="none" stroke="' + k + '" stroke-width="3.2" stroke-linecap="round"/>' +
+      '<ellipse cx="44" cy="102" rx="6" ry="4" fill="#f09aa8"/><ellipse cx="106" cy="102" rx="6" ry="4" fill="#f09aa8"/></svg>';
+  }
+
+  /* two paw prints, the Hendricks & Piper mark */
+  function pawG(cx, cy, sc, rot, col) {
+    return '<g transform="translate(' + cx + ' ' + cy + ') rotate(' + rot + ') scale(' + sc + ')" fill="' + col + '"><ellipse cx="0" cy="7" rx="10" ry="8.4"/><ellipse cx="-12" cy="-3" rx="3.9" ry="5" transform="rotate(-22 -12 -3)"/><ellipse cx="-4.4" cy="-10.5" rx="4" ry="5.2"/><ellipse cx="4.4" cy="-10.5" rx="4" ry="5.2"/><ellipse cx="12" cy="-3" rx="3.9" ry="5" transform="rotate(22 12 -3)"/></g>';
+  }
+  function paws(w, col) {
+    col = col || '#5a3b2e';
+    return '<svg class="paws" viewBox="0 0 100 56" width="' + (w || 50) + '" height="' + Math.round((w || 50) * 0.56) + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + pawG(30, 33, 1.05, -18, col) + pawG(70, 23, 1.05, 16, col) + '</svg>';
+  }
+
+  /* cartoon red panda mascot (head, scarf and ringed tail) */
+  let pid = 0;
+  function panda(size) {
+    const id = 'rp' + (++pid), fur = '#d9692b', dk = '#a8431f', ink = '#2b1d18';
+    return '<svg class="panda-art" viewBox="0 0 100 100" width="' + (size || 56) + '" height="' + (size || 56) + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+      '<defs><clipPath id="' + id + '"><path d="M66 84C98 84 102 52 88 36C86 50 78 62 62 70Z"/></clipPath></defs>' +
+      '<path d="M66 84C98 84 102 52 88 36C86 50 78 62 62 70Z" fill="' + fur + '"/>' +
+      '<g clip-path="url(#' + id + ')" stroke="' + dk + '" stroke-width="5" opacity=".9"><path d="M96 82L74 58M101 70L82 48M104 58L88 40"/></g>' +
+      '<ellipse cx="50" cy="90" rx="25" ry="15" fill="' + dk + '"/>' +
+      '<path d="M28 71Q50 86 72 71L75 81Q50 96 25 81Z" fill="#6f9a64"/><path d="M60 82L68 97L78 93L72 80Z" fill="#7fa874"/><path d="M62 88L71 93M66 84L74 89" stroke="#e6b04a" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<circle cx="22" cy="26" r="11" fill="' + fur + '"/><circle cx="22" cy="27" r="6" fill="#fff4e2"/><circle cx="78" cy="26" r="11" fill="' + fur + '"/><circle cx="78" cy="27" r="6" fill="#fff4e2"/>' +
+      '<ellipse cx="50" cy="48" rx="35" ry="29" fill="' + fur + '"/>' +
+      '<ellipse cx="29" cy="56" rx="14" ry="11.5" fill="#fff8ec"/><ellipse cx="71" cy="56" rx="14" ry="11.5" fill="#fff8ec"/><ellipse cx="50" cy="60" rx="14" ry="11" fill="#fff8ec"/>' +
+      '<ellipse cx="38" cy="33" rx="5.5" ry="3.2" fill="#fff8ec"/><ellipse cx="62" cy="33" rx="5.5" ry="3.2" fill="#fff8ec"/>' +
+      '<path d="M37 49Q33 58 38 63M63 49Q67 58 62 63" fill="none" stroke="' + dk + '" stroke-width="3" stroke-linecap="round"/>' +
+      '<circle cx="38" cy="47" r="4.8" fill="' + ink + '"/><circle cx="62" cy="47" r="4.8" fill="' + ink + '"/><circle cx="39.8" cy="45.2" r="1.7" fill="#fff"/><circle cx="63.8" cy="45.2" r="1.7" fill="#fff"/>' +
+      '<ellipse cx="50" cy="55" rx="4.6" ry="3.3" fill="' + ink + '"/><path d="M50 58V61M43.5 61Q50 68 56.5 61" fill="none" stroke="' + ink + '" stroke-width="2" stroke-linecap="round"/>' +
+      '<ellipse cx="26" cy="58" rx="4.4" ry="2.8" fill="#f09aa8" opacity=".75"/><ellipse cx="74" cy="58" rx="4.4" ry="2.8" fill="#f09aa8" opacity=".75"/></svg>';
+  }
+
+  root.Art = { pack, logo, shade, basketArt, bagArt, shopBag, paws, panda, SHAPES: ['box', 'bottle', 'can', 'bag', 'jar', 'carton'], PATTERNS: ['plain', 'stripe', 'band', 'dots', 'split', 'check', 'zig'] };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* Pass the Basket: synthesised sound effects (Web Audio). No audio files. */
+(function (root) {
+  'use strict';
+  let ctx = null, master = null, on = true;
+  try { on = (root.localStorage && root.localStorage.getItem('passbasket:sound')) !== 'off'; } catch (e) { /* storage blocked */ }
+
+  function ensure() {
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+    const AC = root.AudioContext || root.webkitAudioContext; if (!AC) return null;
+    ctx = new AC();
+    const lim = ctx.createDynamicsCompressor(); master = ctx.createGain(); master.gain.value = 0.9;
+    master.connect(lim); lim.connect(ctx.destination);
+    return ctx;
+  }
+  function tone(f, dur, type, vol, delay, slideTo) {
+    const c = ensure(); if (!c || !on) return;
+    const t = c.currentTime + (delay || 0) / 1000, o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'sine'; o.frequency.setValueAtTime(f, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.2, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.02);
+  }
+  function noise(dur, vol, delay, f0, f1, q) {
+    const c = ensure(); if (!c || !on) return;
+    const t = c.currentTime + (delay || 0) / 1000, len = Math.max(1, Math.floor(c.sampleRate * dur));
+    const buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const s = c.createBufferSource(); s.buffer = buf;
+    const flt = c.createBiquadFilter(); flt.type = 'bandpass'; flt.Q.value = q || 1;
+    flt.frequency.setValueAtTime(f0 || 2000, t); if (f1) flt.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(vol || 0.2, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(flt); flt.connect(g); g.connect(master); s.start(t); s.stop(t + dur + 0.02);
+  }
+
+  const FX = {
+    tap: () => tone(660, 0.05, 'sine', 0.18),
+    pick: () => { tone(520, 0.06, 'triangle', 0.22); tone(780, 0.07, 'triangle', 0.18, 45); },
+    drop: () => { tone(300, 0.09, 'sine', 0.25); noise(0.05, 0.12, 0, 900, 400, 0.8); },
+    good: () => { tone(660, 0.09, 'triangle', 0.22); tone(880, 0.14, 'triangle', 0.22, 80); },
+    wrong: () => { tone(220, 0.14, 'square', 0.12); tone(165, 0.2, 'square', 0.12, 120); },
+    scan: n => { const f = 1700 + ((n || 0) % 5) * 70; tone(f, 0.09, 'square', 0.16); tone(f * 1.5, 0.05, 'square', 0.06, 0); },
+    total: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.18, 'triangle', 0.22, i * 90)),
+    coin: () => { const j = 1 + Math.random() * 0.12; tone(2400 * j, 0.05, 'sine', 0.14); tone(3300 * j, 0.1, 'sine', 0.1, 28); noise(0.03, 0.08, 0, 5000, 4000, 2); },
+    note: () => { noise(0.14, 0.1, 0, 3500, 1500, 0.7); tone(520, 0.08, 'triangle', 0.12, 30); },
+    swipe: () => noise(0.28, 0.18, 0, 500, 3200, 1.4),
+    key: () => tone(1000, 0.04, 'square', 0.1),
+    approve: () => [880, 1100, 1320].forEach((f, i) => tone(f, 0.12, 'square', 0.12, i * 110)),
+    ching: () => { noise(0.04, 0.2, 0, 1200, 800, 1); tone(1568, 0.55, 'sine', 0.22, 40); tone(2093, 0.75, 'sine', 0.18, 120); },
+    drawer: () => { tone(110, 0.16, 'sine', 0.3); noise(0.12, 0.2, 0, 400, 150, 0.7); },
+    print: () => { for (let i = 0; i < 22; i++) noise(0.025, 0.1, i * 85, 3000 + (i % 3) * 400, 2500, 1.5); },
+    pass: () => { tone(523, 0.18, 'triangle', 0.2); tone(784, 0.3, 'triangle', 0.2, 140); },
+    fanfare: () => [523, 659, 784, 1047, 1318].forEach((f, i) => tone(f, 0.22, 'triangle', 0.2, i * 100))
+  };
+
+  root.Sfx = {
+    play(name, a) { try { if (FX[name]) FX[name](a); } catch (e) { /* audio unavailable */ } },
+    unlock() { try { ensure(); } catch (e) { /* ignore */ } },
+    isOn: () => on,
+    setOn(v) { on = !!v; try { root.localStorage.setItem('passbasket:sound', on ? 'on' : 'off'); } catch (e) { /* ignore */ } }
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* Pass the Basket: draws a pretty receipt onto a canvas (for display, sharing and saving). */
+(function (root) {
+  'use strict';
+  const W = 420, M = 18, PW = W - M * 2, PAD = 26, SC = 2;
+  const MONO = '"Courier New", Courier, monospace';
+  const SANS = 'ui-rounded, "Nunito", "Segoe UI", system-ui, sans-serif';
+  const INK = '#5a3b2e', GREY = '#9a8678';
+
+  function wrap(ctx, text, maxW) {
+    const words = String(text).split(/\s+/), out = []; let cur = '';
+    words.forEach(w => {
+      const t = cur ? cur + ' ' + w : w;
+      if (ctx.measureText(t).width <= maxW || !cur) cur = t; else { out.push(cur); cur = w; }
+    });
+    if (cur) out.push(cur);
+    return out;
+  }
+  function fit(ctx, text, maxW) {
+    if (ctx.measureText(text).width <= maxW) return text;
+    while (text.length > 1 && ctx.measureText(text + '…').width > maxW) text = text.slice(0, -1);
+    return text + '…';
+  }
+  function dashed(ctx, y, colour) {
+    ctx.save(); ctx.strokeStyle = colour || '#dcc9ad'; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(M + PAD, y); ctx.lineTo(W - M - PAD, y); ctx.stroke(); ctx.restore();
+  }
+  function row(ctx, y, l, r, o) {
+    o = o || {};
+    ctx.font = (o.bold ? 'bold ' : '') + (o.size || 14) + 'px ' + (o.font || MONO);
+    ctx.fillStyle = o.colour || INK;
+    ctx.textAlign = 'left'; ctx.fillText(fit(ctx, l, PW - PAD * 2 - ctx.measureText(r).width - 12), M + PAD, y);
+    ctx.textAlign = 'right'; ctx.fillText(r, W - M - PAD, y);
+  }
+  function paperPath(ctx, top, bottom) {
+    const t = 8, x0 = M, x1 = W - M;
+    ctx.beginPath(); ctx.moveTo(x0, top + t);
+    for (let x = x0; x < x1; x += t * 2) { ctx.lineTo(x + t, top); ctx.lineTo(Math.min(x + t * 2, x1), top + t); }
+    ctx.lineTo(x1, bottom - t);
+    for (let x = x1; x > x0; x -= t * 2) { ctx.lineTo(x - t, bottom); ctx.lineTo(Math.max(x - t * 2, x0), bottom - t); }
+    ctx.closePath();
+  }
+  function barcode(ctx, y, seed, accent) {
+    const rng = root.PBCore.rngFrom('bar' + seed); let x = (W - 232) / 2; const end = x + 232;
+    ctx.fillStyle = INK;
+    while (x < end) { const w = 1 + Math.floor(rng() * 3); if (rng() > 0.35) ctx.fillRect(x, y, w, 44); x += w + 1 + Math.floor(rng() * 2); }
+  }
+
+  /* draws the whole receipt; if H is given it also paints the backdrop and paper first. Returns end y. */
+  function render(ctx, m, img, H, pawImg) {
+    const Art = root.Art, C = root.PBCore, accent = m.logoBg;
+    if (H) {
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, Art.shade(accent, 0.8)); g.addColorStop(1, Art.shade(accent, 0.62));
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.save(); ctx.shadowColor = 'rgba(40,20,0,.28)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 4;
+      paperPath(ctx, M, H - M); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.restore();
+      ctx.save(); paperPath(ctx, M, H - M); ctx.clip();
+      ctx.fillStyle = accent; ctx.fillRect(0, M, W, 7); ctx.restore();
+    }
+    let y = M + 30;
+    if (img) ctx.drawImage(img, (W - 76) / 2, y, 76, 76);
+    y += 76 + 30;
+    ctx.fillStyle = INK; ctx.textAlign = 'center'; ctx.font = 'bold 27px ' + SANS;
+    wrap(ctx, m.store, PW - PAD * 2).forEach(l => { ctx.fillText(l, W / 2, y); y += 31; });
+    ctx.font = 'italic 13px ' + SANS; ctx.fillStyle = GREY;
+    ctx.fillText('thank you for shopping with us', W / 2, y); y += 22;
+    dashed(ctx, y); y += 24;
+    row(ctx, y, 'Receipt', '#' + String(m.no).padStart(4, '0'), { size: 13, colour: GREY }); y += 20;
+    row(ctx, y, 'Date', C.fmtDate(m.date), { size: 13, colour: GREY }); y += 20;
+    row(ctx, y, 'Time', C.fmtTime(m.date), { size: 13, colour: GREY }); y += 20;
+    row(ctx, y, 'Served by', m.operator, { size: 13, colour: GREY }); y += 16;
+    dashed(ctx, y); y += 26;
+    m.lines.forEach(l => {
+      row(ctx, y, (l.qty > 1 ? l.qty + ' x ' : '') + l.name, C.money(l.total)); y += 22;
+      if (l.qty > 1) { row(ctx, y - 3, '    @ ' + C.money(l.unit) + ' each', '', { size: 11, colour: GREY }); y += 16; }
+    });
+    y += 2; dashed(ctx, y); y += 24;
+    row(ctx, y, 'ITEMS', String(m.count), { size: 13, colour: GREY }); y += 14;
+    ctx.fillStyle = accent; ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(M + PAD - 6, y, PW - PAD * 2 + 12, 46, 12); else ctx.rect(M + PAD - 6, y, PW - PAD * 2 + 12, 46);
+    ctx.fill();
+    row(ctx, y + 31, 'TOTAL', C.money(m.total), { bold: true, size: 22, font: SANS, colour: '#fff' }); y += 46 + 28;
+    if (m.method === 'cash') {
+      row(ctx, y, 'CASH TENDERED', C.money(m.tendered), { size: 14 }); y += 21;
+      row(ctx, y, 'CHANGE', C.money(m.change), { size: 14, bold: true }); y += 14;
+    } else {
+      row(ctx, y, 'CARD', C.money(m.total), { size: 14 }); y += 21;
+      row(ctx, y, 'PIN VERIFIED', '✓', { size: 13, colour: GREY }); y += 14;
+    }
+    dashed(ctx, y + 4); y += 34;
+    barcode(ctx, y, m.no, accent); y += 44 + 16;
+    ctx.textAlign = 'center'; ctx.font = '12px ' + MONO; ctx.fillStyle = GREY;
+    ctx.fillText(String(m.no * 7391 % 100000).padStart(5, '0') + ' ' + String(m.no * 4813 % 100000).padStart(5, '0'), W / 2, y); y += 30;
+    ctx.font = 'bold 16px ' + SANS; ctx.fillStyle = INK; ctx.fillText('See you again soon!', W / 2, y); y += 22;
+    if (pawImg) ctx.drawImage(pawImg, (W - 58) / 2, y - 4, 58, 33); y += 40;
+    ctx.font = '11px ' + SANS; ctx.fillStyle = GREY; ctx.fillText('a Hendricks & Piper game', W / 2, y); y += 28;
+    return y + M;
+  }
+
+  function loadSvg(svg) {
+    return new Promise(res => {
+      const img = new Image();
+      img.onload = () => res(img); img.onerror = () => res(null);
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    });
+  }
+  const loadLogo = m => loadSvg(root.Art.logo(m.logoId, m.logoBg, 152));
+  async function make(m) {
+    const img = await loadLogo(m), pawImg = await loadSvg(root.Art.paws(116, '#b9a58f'));
+    const scratch = document.createElement('canvas').getContext('2d');
+    const H = Math.ceil(render(scratch, m, img, 0, pawImg));
+    const cv = document.createElement('canvas');
+    cv.width = W * SC; cv.height = H * SC;
+    const ctx = cv.getContext('2d'); ctx.scale(SC, SC);
+    render(ctx, m, img, H, pawImg);
+    return cv;
+  }
+  function blob(cv) { return new Promise(res => cv.toBlob(res, 'image/png')); }
+
+  root.Receipt = { make, blob };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* Pass the Basket: all DOM, flow and touch handling. */
+(function () {
+  'use strict';
+  const PACK = JSON.parse(document.getElementById('content-pack').textContent);
+  const K = window.PBCore, C = K.create(PACK), Art = window.Art, Sfx = window.Sfx;
+  const $ = (s, e) => (e || document).querySelector(s);
+  const $$ = (s, e) => Array.prototype.slice.call((e || document).querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const money = p => K.money(p);
+
+  /* ---------------- storage (localStorage, with in-memory fallback) ---------------- */
+  const KEY = 'passbasket:v1';
+  let storageOK = true;
+  function load() {
+    try { const raw = localStorage.getItem(KEY); if (raw) return C.sanitizeState(JSON.parse(raw)); } catch (e) { /* fall through */ }
+    try { localStorage.setItem('passbasket:probe', '1'); localStorage.removeItem('passbasket:probe'); } catch (e) { storageOK = false; }
+    return C.defaultState();
+  }
+  let S = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(C.serialize(S))); storageOK = true; } catch (e) { storageOK = false; } }
+
+  /* ---------------- session state ---------------- */
+  const U = { screen: 'title', tab: 'store', delivery: null, stocked: 0, deliveryTotal: 0, sale: null, to: null };
+  const STAGES = {
+    stage1: { n: 1, name: 'Stock', role: 'Shopworker', colour: '#7fa874' },
+    stage2: { n: 2, name: 'Shop', role: 'Shopper', colour: '#e8833a' },
+    stage3: { n: 3, name: 'Checkout', role: 'Cashier', colour: '#6f93a8' },
+    stage4: { n: 4, name: 'Pay', role: 'Customer', colour: '#b86f8e' },
+    stage5: { n: 5, name: 'Receipt', role: 'Cashier', colour: '#6f93a8' }
+  };
+  const HAND = {
+    stage2: { title: 'Pass the phone to a friend', text: 'Fill your basket from the shelves. Drag packs down into the basket, or just tap them.' },
+    stage4: { title: 'Pass the phone to the customer', text: 'Time to pay! Hand over cash, or swipe your card and enter a PIN.' },
+    stage5: { title: 'Pass the phone back to the cashier', text: 'Accept the payment, then print the receipt.' }
+  };
+
+  const leaves = () => '<div class="leaves" aria-hidden="true">' + ['#e8833a', '#c4572f', '#e6b04a', '#d98a9a', '#9db68c', '#e8833a', '#c4572f'].map((c, i) => '<i style="left:' + (6 + i * 14) + '%;animation-delay:-' + (i * 1.7) + 's;animation-duration:' + (8 + (i % 3) * 2) + 's;--c:' + c + '"></i>').join('') + '</div>';
+  const view = html => { $('#view').innerHTML = html; };
+  let toastT = 0;
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
+  function advance(to) {
+    if (S.settings.handoffs && HAND[to]) { U.to = to; go('hand'); } else go(to);
+  }
+  function go(screen) {
+    U.screen = screen;
+    if (screen === 'stage1') { U.delivery = null; }
+    if (screen === 'stage3') startSale();
+    render();
+  }
+
+  /* ---------------- top bar ---------------- */
+  const ICON_SND = on => '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>' + (on ? '<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>' : '<path d="M17 9l5 6M22 9l-5 6"/>') + '</svg>';
+  const ICON_HOME = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>';
+  function renderBar() {
+    document.documentElement.style.setProperty('--accent', S.store.logoBg);
+    $('#bar').innerHTML = '<span class="blogo">' + Art.logo(S.store.logoId, S.store.logoBg, 34) + '</span><span class="bname" id="bname">' + esc(S.store.name) + '</span>' +
+      '<button class="ib" data-act="sound" aria-label="Sound">' + ICON_SND(Sfx.isOn()) + '</button><button class="ib" data-act="menu" aria-label="Menu">' + ICON_HOME + '</button>';
+    const r = $('#role'), st = STAGES[U.screen === 'hand' ? U.to : U.screen];
+    if (!st) { r.hidden = true; return; }
+    r.hidden = false; r.style.setProperty('--role', st.colour);
+    let pips = ''; for (let i = 1; i <= 5; i++) pips += '<i class="' + (i < st.n ? 'done' : i === st.n ? 'now' : '') + '"></i>';
+    r.innerHTML = (U.screen === 'hand' ? '<b>PASS THE PHONE</b>' : '<b>STAGE ' + st.n + ' · ' + st.name.toUpperCase() + '</b>') + '<span class="pips">' + pips + '</span><span class="who">' + (U.screen === 'hand' ? 'NEXT: ' : 'YOU ARE: ') + st.role.toUpperCase() + '</span>';
+  }
+
+  /* ---------------- render router ---------------- */
+  function render() {
+    renderBar();
+    const f = { title, setup, hand, stage1, stage2, stage3, stage4, stage5 }[U.screen] || title;
+    f(); renderTip();
+  }
+
+  /* ---------------- red panda tips ---------------- */
+  function tipFor() {
+    const sc = U.screen, s = U.sale;
+    if (sc === 'stage1') return U.deliveryTotal ? 'Drag each pack to the shelf bay with its name on. Stuck? Tap a pack and I will show you where it lives!' : '';
+    if (sc === 'stage2') return 'Fill your basket! Drag packs down into it, or just tap them. Tap a pack in the basket to put it back.';
+    if (!s) return '';
+    if (sc === 'stage3') {
+      if (s.step === 'signon') return 'Hello, cashier! Type your name to sign on at the till.';
+      if (s.left.length) return 'Step 1: put the items on the belt. Drag them from the basket, or tap them.';
+      if (s.belt.length) return 'Step 2: scan each item. Drag it to the scanner, or tap it. Listen for the beep!';
+      if (s.scanned.length) return 'Step 3: all scanned! Press BAG THE ITEMS and I will pack them into a bag for you.';
+      return 'All packed! Ask the customer how they would like to pay: cash or card?';
+    }
+    if (sc === 'stage4') {
+      if (s.method === 'cash') return 'Tap notes and coins to hand over at least ' + money(s.total) + '. Pay too much and you get change!';
+      return s.cardOk ? 'Card read! Tap any 4 numbers on the keypad for your PIN, then press OK.' : 'Slide your card through the reader, slowly and smoothly, all the way along.';
+    }
+    if (sc === 'stage5') {
+      if (s.p5 === 'receipt') return 'Lovely! Share, email or save the receipt, then serve the next customer.';
+      if (s.p5 === 'accepted') return s.method === 'cash' ? 'Check the change, then press Issue receipt.' : 'Approved! Now press Issue receipt.';
+      return 'Press Accept payment. ' + (s.method === 'cash' ? 'The cash drawer will open and show the change.' : 'The card machine will check with the bank.');
+    }
+    return '';
+  }
+  function renderTip() {
+    const t = $('#tip'); if (!t) return;
+    const txt = S.settings.tips !== false ? tipFor() : '';
+    if (!txt) { t.hidden = true; t.dataset.txt = ''; return; }
+    t.hidden = false;
+    if (t.dataset.txt === txt && t.dataset.open === String(U.tipOpen !== false)) return;
+    const changed = t.dataset.txt !== txt;
+    t.dataset.txt = txt; t.dataset.open = String(U.tipOpen !== false);
+    t.innerHTML = '<button class="panda' + (changed ? ' hop' : '') + '" data-act="tiptoggle" aria-label="Red panda tip: tap to show or hide">' + Art.panda(54) + '</button>' + (U.tipOpen === false ? '' : '<div class="bubble">' + esc(txt) + '</div>');
+  }
+
+  /* ---------------- title ---------------- */
+  function title() {
+    const stock = C.totalStock(S);
+    view('<div class="screen title scroll">' + leaves() + '<div class="brand">' + Art.paws(46) + '<div class="bw"><b>HENDRICKS &amp; PIPER</b><small>presents</small></div></div><div class="tlogo">' + Art.logo(S.store.logoId, S.store.logoBg, 116, false, true) + '</div>' +
+      '<h1>' + esc(PACK.meta.title) + '</h1><p class="sub">' + esc(S.store.name) + ' · a pass-and-play shop game</p>' +
+      '<div class="welcome"><span class="panda">' + Art.panda(62) + '</span><div class="bubble">Hello! Stock the shelves, pass the phone, and I will give you tips as we go.</div></div><ol class="steps5"><li>Stock</li><li>Shop</li><li>Checkout</li><li>Pay</li><li>Receipt</li></ol>' +
+      '<div class="tbtns"><button class="btn big" data-act="play1">Stage 1 · Stock the shelves</button>' +
+      '<button class="btn big alt" data-act="play2"' + (stock ? '' : ' disabled') + '>Stage 2 · Go shopping<small>' + (stock ? stock + ' packs on the shelves' : 'stock the shelves first') + '</small></button>' +
+      '<button class="btn big ghost" data-act="setup">Shop setup</button></div>' +
+      '<p class="fine">' + (S.settings.handoffs ? 'Pass-and-play: the phone changes hands between stages.' : 'Solo mode: no hand-off screens.') + '</p><p class="fine brandline">a Hendricks &amp; Piper game</p></div>');
+  }
+
+  /* ---------------- hand-off ---------------- */
+  function hand() {
+    const st = STAGES[U.to], h = HAND[U.to];
+    Sfx.play('pass');
+    let extra = '';
+    if (U.to === 'stage4' && U.sale) extra = '<p class="hmeta">They are paying by <b>' + (U.sale.method === 'cash' ? 'CASH' : 'CARD') + '</b>: ' + money(U.sale.total) + '</p>';
+    view('<div class="screen handoff" style="--role:' + st.colour + '">' + leaves() + '<div class="phone"><svg viewBox="0 0 80 120" width="86" height="130"><rect x="8" y="4" width="64" height="112" rx="12" fill="#fff"/><rect x="15" y="16" width="50" height="80" rx="4" fill="' + st.colour + '" opacity=".35"/><circle cx="40" cy="106" r="5" fill="' + st.colour + '"/><path d="M26 56h28M46 46l10 10-10 10" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+      '<h2>' + h.title + '</h2><div class="rolechip">' + st.role + '</div><p>' + h.text + '</p>' + extra +
+      '<button class="btn big light" data-act="handGo">I have the phone ▸</button></div>');
+  }
+
+  /* ---------------- shelf (shared by stages 1 and 2) ---------------- */
+  function slotsHTML(it, mode) {
+    const n = S.shelf[it.id] || 0, cap = C.capacity(S); let h = '';
+    for (let i = 0; i < cap; i++) {
+      if (i < n) h += '<div class="slot' + (mode === 'shop' ? ' dragpack onshelf' : '') + '"' + (mode === 'shop' ? ' data-from="shelf" data-item="' + it.id + '"' : '') + '>' + Art.pack(it) + '</div>';
+      else h += '<div class="slot empty"></div>';
+    }
+    return h;
+  }
+  function bayHTML(it, mode) {
+    return '<div class="bay' + (mode === 'shop' && !(S.shelf[it.id] || 0) ? ' soldout' : '') + '" data-bay="' + it.id + '"><div class="slots">' + slotsHTML(it, mode) + '</div><div class="tag"><b>' + esc(it.name) + '</b><span>' + money(it.price) + '</span></div></div>';
+  }
+  function shelfHTML(mode) {
+    const L = K.layout(S.items); let rows = '';
+    for (let r = 0; r < L.rows; r++) rows += '<div class="srow">' + L.bays.filter(b => b.row === r).map(b => bayHTML(C.itemById(S, b.item), mode)).join('') + '</div>';
+    return '<div class="shelfwrap ' + mode + '" id="shelfwrap" data-drop="shelf"><div class="shelf" style="width:' + (L.per * 124 + 20) + 'px">' + rows + '</div></div>';
+  }
+  function updateBay(id) {
+    const b = $('.bay[data-bay="' + id + '"]'); if (!b) return;
+    const it = C.itemById(S, id), mode = U.screen === 'stage2' ? 'shop' : 'stock';
+    b.querySelector('.slots').innerHTML = slotsHTML(it, mode);
+    b.classList.toggle('soldout', mode === 'shop' && !(S.shelf[id] || 0));
+  }
+  function fitShelf() {
+    const w = $('#shelfwrap'); if (!w) return;
+    const rows = K.layout(S.items).rows, rowH = (w.clientHeight - 6) / rows, cap = C.capacity(S);
+    const pw = Math.max(26, Math.min(56, (rowH - 9 - 48) * 0.75, (116 - (cap - 1) * 3) / cap));
+    w.style.setProperty('--pw', Math.round(pw) + 'px');
+  }
+  function flashBay(id) {
+    const w = $('#shelfwrap'), b = $('.bay[data-bay="' + id + '"]'); if (!w || !b) return;
+    w.scrollTo({ left: Math.max(0, b.offsetLeft - (w.clientWidth - b.offsetWidth) / 2), behavior: 'smooth' });
+    b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
+  }
+
+  /* ---------------- stage 1: stock the shelves ---------------- */
+  function stage1() {
+    if (!U.delivery) { U.delivery = C.makeDelivery(S, 'del' + Date.now() + Math.random()); U.stocked = 0; U.deliveryTotal = U.delivery.length; }
+    if (!U.deliveryTotal) {
+      view('<div class="screen centre"><h2>The shelves are already full</h2><p>Nothing to unpack. Time to shop!</p><button class="btn big" data-act="finish1">Continue ▸</button></div>');
+      return;
+    }
+    view('<div class="screen st1">' + shelfHTML('stock') + '<div class="stockroom"><div class="sr-head"><b>STOCK ROOM</b><span id="srLeft"></span></div><div class="sr-row" id="tray"></div></div>' +
+      '<div class="actions"><button class="btn grow" id="fin1" data-act="finish1"></button></div></div>');
+    fitShelf(); refreshTray();
+  }
+  function refreshTray() {
+    const t = $('#tray'); if (!t) return;
+    t.innerHTML = U.delivery.slice(0, 5).map((id, i) => {
+      const it = C.itemById(S, id);
+      return '<div class="trayitem dragpack" data-from="tray" data-idx="' + i + '" data-item="' + id + '">' + Art.pack(it) + '<small>' + esc(it.name) + '</small></div>';
+    }).join('') || '<div class="allin">All unpacked! 🎉</div>';
+    $('#srLeft').textContent = U.delivery.length ? U.delivery.length + ' to unpack · tap a pack to find its bay' : 'finished';
+    const f = $('#fin1'), left = U.delivery.length;
+    f.textContent = left ? 'Finish stocking (' + left + ' left over)' : 'All stocked! Finish ▸';
+    f.classList.toggle('pulse', !left); f.disabled = C.totalStock(S) === 0;
+  }
+
+  /* ---------------- stage 2: shopping ---------------- */
+  function stage2() {
+    if (C.totalStock(S) + S.basket.length === 0) {
+      view('<div class="screen centre"><h2>The shelves are bare</h2><p>Someone needs to stock them first.</p><button class="btn big" data-act="play1">Stage 1 · Stock the shelves</button></div>');
+      return;
+    }
+    view('<div class="screen st2">' + shelfHTML('shop') + '<div class="dock" id="dock" data-drop="basket"><div class="dock-art">' + Art.basketArt() + '</div><div class="dock-head" id="dockHead"></div><div class="contents" id="bcontents"></div></div>' +
+      '<div class="actions"><button class="btn ghost" data-act="toStock">◂ Restock</button><button class="btn grow" id="doneShop" data-act="doneShop">Done shopping</button></div></div>');
+    fitShelf(); refreshDock();
+  }
+  function refreshDock() {
+    const c = $('#bcontents'); if (!c) return;
+    const n = S.basket.length; c.className = 'contents cs' + (n <= 4 ? 1 : n <= 8 ? 2 : n <= 12 ? 3 : 4);
+    c.innerHTML = S.basket.map((id, i) => '<div class="bi dragpack" data-from="basket2" data-idx="' + i + '" data-item="' + id + '">' + Art.pack(C.itemById(S, id)) + '</div>').join('');
+    const max = S.settings.basketMax;
+    $('#dockHead').innerHTML = '<b>YOUR BASKET</b><span>' + S.basket.length + ' / ' + max + (S.basket.length ? ' · ' + money(C.total(S, S.basket)) : ' · drag packs here') + '</span>';
+    const d = $('#doneShop'); d.disabled = !S.basket.length; d.textContent = S.basket.length ? 'Done shopping (' + S.basket.length + ')' : 'Pick something first';
+  }
+  function pickItem(id) {
+    if (S.basket.length >= S.settings.basketMax) { Sfx.play('wrong'); toast('Basket full! Put something back, or finish.'); return; }
+    if (!C.pick(S, id)) { Sfx.play('wrong'); return; }
+    Sfx.play('pick'); save(); updateBay(id); refreshDock();
+    const d = $('#dock'); d.classList.remove('bump'); void d.offsetWidth; d.classList.add('bump');
+  }
+  function putBackIdx(i) { if (C.putBack(S, i)) { Sfx.play('drop'); save(); S.items.forEach(it => updateBay(it.id)); refreshDock(); } }
+
+  /* ---------------- stage 3: checkout ---------------- */
+  function startSale() {
+    const ids = S.basket.slice(); let u = 0;
+    U.sale = { ids, left: ids.map(id => ({ u: ++u, id })), belt: [], scanned: [], bag: [], bagKind: 'bag', log: [], sub: 0, scans: 0, step: 'signon', method: null, tendered: {}, total: C.total(S, ids), change: 0, p5: 'accept', no: S.receiptNo };
+  }
+  function stage3() { stage3Body(); renderTip(); }
+  function stage3Body() {
+    const s = U.sale;
+    if (s.step === 'signon') {
+      view('<div class="screen centre"><div class="card signon"><div class="lcdtitle">CHECKOUT · TILL 1</div><p>Sign on to start serving. <b>' + s.ids.length + '</b> item' + (s.ids.length === 1 ? '' : 's') + ' in the customer’s basket.</p>' +
+        '<label for="opname">Cashier name</label><input id="opname" maxlength="16" autocomplete="off" placeholder="Your name" value="' + esc(S.operator) + '"><button class="btn big" data-act="signon">Sign on</button></div></div>');
+      return;
+    }
+    const scannedAll = !s.left.length && !s.belt.length, done = scannedAll && !s.scanned.length;
+    const mini = (o, from, cls) => '<div class="' + cls + ' dragpack" data-from="' + from + '" data-u="' + o.u + '" data-item="' + o.id + '">' + Art.pack(C.itemById(S, o.id)) + '</div>';
+    view('<div class="screen st3"><div class="body"><div class="till"><div class="lcd"><span><small>OPERATOR</small><br>' + esc(S.operator) + '</span><span class="r"><small>' + (scannedAll ? 'TOTAL' : 'SUBTOTAL') + '</small><br><span class="big' + (scannedAll ? ' flash' : '') + '">' + money(scannedAll ? s.total : s.sub) + '</span></span></div>' +
+      '<div class="scanlog">' + (s.log.slice(-2).reverse().map(l => '<div><span>' + esc(l.name) + '</span><span>' + money(l.p) + '</span></div>').join('') || '<div class="dim">ready to scan…</div>') + '</div></div>' +
+      '<div class="card"><h4>CUSTOMER’S BASKET · ' + s.left.length + ' left</h4><div class="items" data-drop="basketback">' + (s.left.map(o => mini(o, 'basket3', 'mi')).join('') || '<span class="dim">empty</span>') + '</div></div>' +
+      '<div class="beltrow"><div class="belt' + (s.belt.length ? ' moving' : '') + '" data-drop="belt">' + (s.belt.map(o => mini(o, 'belt', 'bt')).join('') || '<span class="dim">belt</span>') + '</div><div class="scanner" data-drop="scanner"><div class="laser"></div><b>SCAN</b></div></div>' +
+      '<div class="card scannedcard"><h4>' + (s.bag.length ? 'BAGGED · ' + s.bag.length + ' items' : 'SCANNED · ' + s.scanned.length) + '</h4><div class="scanrow"><div class="items">' + (s.scanned.map(o => '<div class="mi sc" data-u="' + o.u + '">' + Art.pack(C.itemById(S, o.id)) + '</div>').join('') || '<span class="dim">' + (s.bag.length ? 'all packed!' : 'scanned items wait here') + '</span>') + '</div>' +
+      '<div class="minibag' + (s.bag.length ? ' full' : '') + (scannedAll && s.scanned.length ? ' ready' : '') + '" id="minibag"' + (scannedAll && s.scanned.length ? ' data-act="bagall"' : '') + '>' + Art.shopBag(!!s.bag.length) + (s.bag.length ? '<span class="bagcount">' + s.bag.length + '</span>' : '') + '</div></div></div>' +
+      '<p class="hint">' + (s.left.length ? 'Drag items from the basket onto the belt (or tap them).' : s.belt.length ? 'Drag each item to the scanner (or tap it) to scan.' : s.scanned.length ? 'All scanned! Press BAG THE ITEMS.' : 'All bagged! How is the customer paying?') + '</p>' +
+      '</div><div class="actions">' + (done ? '<button class="btn grow m-cash" data-act="pay" data-m="cash">CASH</button><button class="btn grow m-card" data-act="pay" data-m="card">CARD</button>' : scannedAll ? '<button class="btn grow pulse" data-act="bagall">BAG THE ITEMS</button>' : '<button class="btn grow" disabled>Scan everything first</button>') + '</div></div>');
+  }
+  function toBelt(u) {
+    const s = U.sale, i = s.left.findIndex(o => o.u === u); if (i < 0) return;
+    s.belt.push(s.left.splice(i, 1)[0]); Sfx.play('drop'); stage3();
+  }
+  function scanItem(u) {
+    const s = U.sale, i = s.belt.findIndex(o => o.u === u); if (i < 0) return;
+    const o = s.belt.splice(i, 1)[0], it = C.itemById(S, o.id);
+    s.scanned.push(o); s.scans++; s.sub += it.price; s.log.push({ name: it.name, p: it.price });
+    Sfx.play('scan', s.scans);
+    if (!s.left.length && !s.belt.length) setTimeout(() => Sfx.play('total'), 260);
+    stage3();
+  }
+
+  /* BAG THE ITEMS: every scanned item hops into the little bag, one after another */
+  function bagAll() {
+    const s = U.sale; if (!s || U.bagging || !s.scanned.length || s.left.length || s.belt.length) return;
+    U.bagging = true;
+    const bag = $('#minibag'), els = $$('.scannedcard .sc'), br = bag && bag.getBoundingClientRect();
+    const gap = 110;
+    els.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      const dx = br.left + br.width / 2 - (r.left + r.width / 2), dy = br.top + br.height * 0.3 - (r.top + r.height / 2);
+      el.style.transition = 'transform .4s cubic-bezier(.5,-.4,.7,1), opacity .4s ease-in';
+      el.style.transitionDelay = (i * gap) + 'ms';
+      el.style.zIndex = 5;
+      void el.offsetWidth;
+      el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(.3)'; el.style.opacity = '.1';
+      setTimeout(() => { Sfx.play('drop'); bag.classList.remove('wob'); void bag.offsetWidth; bag.classList.add('wob'); }, i * gap + 330);
+    });
+    setTimeout(() => {
+      s.bag = s.bag.concat(s.scanned); s.scanned = []; U.bagging = false;
+      Sfx.play('good'); stage3();
+    }, els.length * gap + 520);
+  }
+
+  /* ---------------- stage 4: tender payment ---------------- */
+  function stage4() {
+    const s = U.sale;
+    const due = '<div class="card due"><small>AMOUNT DUE</small><div class="big">' + money(s.total) + '</div><div class="paying">Paying by <b>' + (s.method === 'cash' ? 'CASH' : 'CARD') + '</b></div></div>';
+    if (s.method === 'cash') {
+      view('<div class="screen st4"><div class="body">' + due + '<div class="card"><h4>YOUR HAND-OVER · <b id="tenTotal"></b></h4><div class="chips" id="chips"></div><div class="status" id="tenStatus"></div></div>' +
+        '<div class="dens">' + PACK.denoms.map(d => '<button class="den ' + (d >= 500 ? 'note' : 'coin') + ' d' + d + '" data-act="den" data-d="' + d + '">' + K.denomLabel(d) + '</button>').join('') + '</div>' +
+        '</div><div class="actions"><button class="btn ghost" data-act="clearTender">Clear</button><button class="btn ghost" data-act="exactTender">Exact</button><button class="btn grow" id="handOver" data-act="handOver"></button></div></div>');
+      cashRefresh();
+    } else {
+      s.cardOk = false;
+      view('<div class="screen st4"><div class="body">' + due + '<div class="reader" id="reader"><div class="rmsg" id="rmsg">Swipe your card through the reader</div><div class="track" id="track"><div class="arrows">▸ ▸ ▸</div>' +
+        '<div class="cardbtn" id="cardbtn"><div class="stripe"></div><div class="chipc"></div><span>' + esc(S.store.name.slice(0, 14)) + ' BANK</span></div></div></div>' +
+        '<div class="card pinbox" id="pinbox" hidden><h4>ENTER YOUR PIN</h4><div class="pindots" id="pindots"></div><div class="keypad">' +
+        [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => '<button class="key" data-act="pinkey" data-k="' + n + '">' + n + '</button>').join('') +
+        '<button class="key clr" data-act="pinback" aria-label="Delete">⌫</button><button class="key" data-act="pinkey" data-k="0">0</button><button class="key ok" data-act="pinOk">OK</button></div></div></div></div>');
+      bindSwipe();
+    }
+  }
+  function cashRefresh() {
+    const s = U.sale, t = K.tenderTotal(s.tendered), due = s.total;
+    $('#tenTotal').textContent = money(t);
+    $('#chips').innerHTML = PACK.denoms.filter(d => s.tendered[d]).map(d => '<button class="chip" data-act="unden" data-d="' + d + '">' + K.denomLabel(d) + ' × ' + s.tendered[d] + '</button>').join('') || '<span class="dim">tap the notes and coins below</span>';
+    const st = $('#tenStatus');
+    if (t < due) { st.className = 'status short'; st.textContent = 'Still ' + money(due - t) + ' to go'; }
+    else if (t === due) { st.className = 'status ok'; st.textContent = 'Exact money. No change needed!'; }
+    else { st.className = 'status ok'; st.textContent = 'Cashier will give ' + money(t - due) + ' change'; }
+    const b = $('#handOver'); b.disabled = t < due; b.textContent = t < due ? 'Not enough yet' : 'Hand over ' + money(t);
+  }
+  function pinRefresh() {
+    const n = (U.sale.pin || '').length, d = $('#pindots'); if (!d) return;
+    d.innerHTML = [0, 1, 2, 3].map(i => '<i class="' + (i < n ? 'on' : '') + '"></i>').join('');
+  }
+  function bindSwipe() {
+    const card = $('#cardbtn'), track = $('#track'); let sx = 0, drag = false, max = 0, played = false;
+    card.addEventListener('pointerdown', e => { drag = true; sx = e.clientX; max = track.clientWidth - card.offsetWidth - 8; played = false; card.style.transition = 'none'; card.setPointerCapture(e.pointerId); Sfx.unlock(); });
+    card.addEventListener('pointermove', e => {
+      if (!drag) return; const x = Math.max(0, Math.min(max, e.clientX - sx)); card.style.transform = 'translateX(' + x + 'px)';
+      if (x > 20 && !played) { played = true; Sfx.play('swipe'); }
+    });
+    const end = e => {
+      if (!drag) return; drag = false;
+      const x = parseFloat((card.style.transform.match(/-?[\d.]+/) || [0])[0]);
+      if (x >= max * 0.88) {
+        U.sale.cardOk = true; renderTip(); Sfx.play('approve'); card.style.transform = 'translateX(' + max + 'px)';
+        $('#rmsg').textContent = 'Card read ✓'; $('#reader').classList.add('ok');
+        setTimeout(() => { U.sale.pin = ''; $('#pinbox').hidden = false; $('#reader').classList.add('done'); pinRefresh(); }, 350);
+      } else { card.style.transition = 'transform .25s'; card.style.transform = 'translateX(0)'; if (x > 10) { Sfx.play('wrong'); $('#rmsg').textContent = 'Too quick! Swipe again'; } }
+    };
+    card.addEventListener('pointerup', end); card.addEventListener('pointercancel', end);
+  }
+
+  /* ---------------- stage 5: accept payment, receipt ---------------- */
+  function stage5() { stage5Body(); renderTip(); }
+  function stage5Body() {
+    const s = U.sale;
+    if (s.p5 === 'receipt') { receiptScreen(); return; }
+    const paid = s.method === 'cash' ? 'Customer handed over <b>' + money(K.tenderTotal(s.tendered)) + '</b> in cash' : 'Card swiped and PIN entered';
+    view('<div class="screen st5"><div class="body"><div class="till"><div class="lcd"><span><small>OPERATOR</small><br>' + esc(S.operator) + '</span><span class="r"><small>TOTAL</small><br><span class="big">' + money(s.total) + '</span></span></div></div>' +
+      '<div class="card"><h4>PAYMENT FROM CUSTOMER</h4><p class="paid">' + paid + '</p></div>' +
+      '<div class="card result" id="result" hidden></div>' +
+      '</div><div class="actions"><button class="btn grow" id="accept" data-act="accept">Accept payment</button></div></div>');
+    if (s.p5 === 'accepted') showAccepted(false);
+  }
+  function showAccepted(animate) {
+    const s = U.sale, r = $('#result'); r.hidden = false;
+    if (s.method === 'cash') {
+      const ch = K.denomsFor(s.change, PACK.denoms);
+      r.innerHTML = '<h4>CASH DRAWER OPEN</h4>' + (s.change ? '<p class="change">Change due <b>' + money(s.change) + '</b></p><div class="chips" id="chg"></div>' : '<p class="change">Exact money, no change due 🎉</p>');
+      if (s.change) {
+        const box = $('#chg'); let i = 0;
+        ch.forEach(x => { for (let k = 0; k < x.n; k++) { const d = i++ * (animate ? 190 : 0); setTimeout(() => { if (!box.isConnected) return; const b = document.createElement('span'); b.className = 'chip pop'; b.textContent = K.denomLabel(x.d); box.appendChild(b); if (animate) Sfx.play(x.d >= 500 ? 'note' : 'coin'); }, d); } });
+      }
+    } else {
+      r.innerHTML = '<h4>CARD PAYMENT</h4><p class="change"><span class="stamp">APPROVED ✓</span></p>';
+    }
+    renderTip();
+    const a = $('#accept'); a.dataset.act = 'issue'; a.textContent = 'Issue receipt'; a.classList.add('pulse');
+  }
+  function accept() {
+    const s = U.sale, a = $('#accept'); a.disabled = true;
+    if (s.method === 'cash') {
+      s.change = K.tenderTotal(s.tendered) - s.total; s.p5 = 'accepted';
+      Sfx.play('drawer'); setTimeout(() => Sfx.play('ching'), 120);
+      showAccepted(true); a.disabled = false;
+    } else {
+      const r = $('#result'); r.hidden = false; r.innerHTML = '<h4>CARD PAYMENT</h4><p class="change">Contacting bank<span class="dots"></span></p>';
+      [0, 300, 600].forEach(t => setTimeout(() => Sfx.play('key'), t));
+      setTimeout(() => { s.p5 = 'accepted'; Sfx.play('approve'); showAccepted(true); a.disabled = false; }, 1300);
+    }
+  }
+  async function issueReceipt() {
+    const s = U.sale; s.p5 = 'receipt';
+    s.model = C.receiptModel(S, { ids: s.ids, method: s.method, tendered: K.tenderTotal(s.tendered), change: s.change, no: s.no, date: new Date(), operator: S.operator });
+    S.basket = []; S.receiptNo = s.no + 1; save();
+    try { s.canvas = await Receipt.make(s.model); s.url = s.canvas.toDataURL('image/png'); } catch (e) { s.canvas = null; }
+    stage5();
+  }
+  function receiptScreen() {
+    const s = U.sale;
+    Sfx.play('print');
+    view('<div class="screen st6"><div class="rscroll"><div class="printer"><i></i></div><div class="paperwrap">' + (s.url ? '<img id="rimg" alt="Receipt" src="' + s.url + '">' : '<pre class="rtext">' + esc(C.receiptText(s.model)) + '</pre>') + '</div></div>' +
+      '<div class="rbar"><button data-act="share">Share image</button><button data-act="email">Email</button><button data-act="savepng">Save PNG</button><button data-act="copytext">Copy text</button></div>' +
+      '<div class="actions"><button class="btn grow" data-act="next">Next customer ▸</button><button class="btn ghost" data-act="toStock">Restock</button></div></div>');
+  }
+  function downloadBlob(blob, name) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  async function shareImage() {
+    const s = U.sale; if (!s.canvas) { toast('No image available; try Copy text'); return; }
+    const blob = await Receipt.blob(s.canvas), file = new File([blob], 'receipt.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'Receipt from ' + S.store.name }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    downloadBlob(blob, 'receipt.png'); toast('Sharing is not available here, so the image was saved instead.');
+  }
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); toast('Receipt text copied'); return; } catch (e) { /* fall back */ }
+    const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); toast('Receipt text copied'); } catch (e) { toast('Could not copy here'); } t.remove();
+  }
+  function nextCustomer() {
+    U.sale = null;
+    if (C.totalStock(S) > 0) advance('stage2'); else { toast('The shelves are bare. Restock!'); go('stage1'); }
+  }
+
+  /* ---------------- setup / config ---------------- */
+  function setup() {
+    const tabs = [['store', 'Store'], ['items', 'Items'], ['game', 'Game'], ['data', 'Save']];
+    view('<div class="screen setup"><div class="tabs">' + tabs.map(t => '<button class="tab' + (U.tab === t[0] ? ' on' : '') + '" data-act="tab" data-t="' + t[0] + '">' + t[1] + '</button>').join('') + '</div><div class="panel" id="panel"></div>' +
+      '<div class="actions"><button class="btn grow" data-act="home">Done ▸ Back to game</button></div></div>');
+    ({ store: setupStore, items: setupItems, game: setupGame, data: setupData }[U.tab])();
+  }
+  function setupStore() {
+    $('#panel').innerHTML = '<label for="sname">Store name <small>(printed on receipts)</small></label><input id="sname" maxlength="28" value="' + esc(S.store.name) + '">' +
+      '<label>Logo</label><div class="logos">' + PACK.logos.map(l => '<button class="lg' + (S.store.logoId === l.id ? ' on' : '') + '" data-act="logo" data-id="' + l.id + '" aria-label="' + l.name + '">' + Art.logo(l.id, S.store.logoBg, 52) + '</button>').join('') + '</div>' +
+      '<label>Logo background</label><div class="sw">' + PACK.logoBgs.map(c => '<button class="swb' + (S.store.logoBg === c ? ' on' : '') + '" style="background:' + c + '" data-act="logobg" data-c="' + c + '" aria-label="' + c + '"></button>').join('') + '<label class="swb custom" style="background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red)"><input type="color" id="bgcustom" value="' + S.store.logoBg + '"></label></div>' +
+      '<label>Receipt preview</label><div class="mini-rcpt" style="border-top-color:' + S.store.logoBg + '"><div class="mrl">' + Art.logo(S.store.logoId, S.store.logoBg, 56) + '</div><b id="mrn">' + esc(S.store.name) + '</b><small>thank you for shopping with us</small></div>';
+    $('#sname').addEventListener('input', e => { S.store.name = e.target.value.replace(/[<>]/g, '').slice(0, 28); $('#bname').textContent = S.store.name; $('#mrn').textContent = S.store.name; save(); });
+    $('#bgcustom').addEventListener('change', e => { S.store.logoBg = e.target.value; save(); renderBar(); setupStore(); });
+  }
+  function setupItems() {
+    $('#panel').innerHTML = '<p class="fine">Tap an item to edit it, or add your own.</p><div class="ilist">' + S.items.map(it => '<button class="irow" data-act="edit" data-id="' + it.id + '">' + Art.pack(it, { w: 36 }) + '<span class="in">' + esc(it.name) + '</span><span class="ip">' + money(it.price) + '</span></button>').join('') + '</div><button class="btn big" data-act="newitem">+ Add new item</button>';
+  }
+  function seg(label, key, opts, fmt) {
+    return '<label>' + label + '</label><div class="segm">' + opts.map(o => '<button class="' + (S.settings[key] === o ? 'on' : '') + '" data-act="set" data-k="' + key + '" data-v="' + o + '">' + (fmt ? fmt(o) : o) + '</button>').join('') + '</div>';
+  }
+  function setupGame() {
+    $('#panel').innerHTML = '<label>Hand-off screens</label><div class="segm"><button class="' + (S.settings.handoffs ? 'on' : '') + '" data-act="set" data-k="handoffs" data-v="true">On: pass the phone</button><button class="' + (!S.settings.handoffs ? 'on' : '') + '" data-act="set" data-k="handoffs" data-v="false">Off: solo play</button></div>' +
+      '<label>Red panda tips</label><div class="segm"><button class="' + (S.settings.tips !== false ? 'on' : '') + '" data-act="set" data-k="tips" data-v="true">On</button><button class="' + (S.settings.tips === false ? 'on' : '') + '" data-act="set" data-k="tips" data-v="false">Off</button></div>' +
+      '<label>Sound</label><div class="segm"><button class="' + (Sfx.isOn() ? 'on' : '') + '" data-act="sndset" data-v="1">On</button><button class="' + (!Sfx.isOn() ? 'on' : '') + '" data-act="sndset" data-v="0">Off</button></div>' +
+      seg('Packs per shelf bay', 'bayCapacity', [1, 2, 3]) + seg('Packs in each delivery (types)', 'deliveryItems', [4, 8, 12, 18], v => v + ' types') + seg('Basket size', 'basketMax', [6, 8, 12, 16], v => v + ' items') +
+      '<p class="fine">Changing bay size empties nothing, but extra packs are trimmed to fit.</p>';
+  }
+  function setupData() {
+    $('#panel').innerHTML = '<p class="fine">' + (storageOK ? 'Your shop is saved on this device automatically.' : '<b>Saving is blocked here</b> (some embedded pages do this). Use Export to keep your shop.') + '</p>' +
+      '<div class="two"><button class="btn" data-act="export">Export save file</button><button class="btn ghost" data-act="importfile">Load save file</button></div><input type="file" id="ifile" accept=".json,application/json" hidden>' +
+      '<label for="paste">Or copy / paste save text</label><textarea id="paste" rows="5" placeholder="Paste save text here…"></textarea>' +
+      '<div class="two"><button class="btn ghost" data-act="copysave">Copy save text</button><button class="btn ghost" data-act="loadpaste">Load pasted text</button></div>' +
+      '<p class="fine brandline">' + esc(PACK.meta.title) + ' v' + esc(PACK.meta.version) + ' · a ' + esc(PACK.meta.brand) + ' game</p><label>Danger zone</label><button class="btn danger" id="resetBtn" data-act="reset">Reset shop to defaults</button>';
+    $('#ifile').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return; const r = new FileReader();
+      r.onload = () => applyImport(String(r.result)); r.readAsText(f);
+    });
+  }
+  function applyImport(text) {
+    try { S = C.sanitizeState(JSON.parse(text)); save(); renderBar(); toast('Loaded: ' + S.store.name + ' · ' + S.items.length + ' items'); setup(); } catch (e) { toast('That does not look like a Pass the Basket save'); }
+  }
+
+  /* ---------- item editor sheet ---------- */
+  function openSheet(html) {
+    closeSheet(); const b = document.createElement('div'); b.className = 'sheet-back'; b.id = 'sheetback';
+    b.innerHTML = '<div class="sheet">' + html + '</div>'; b.addEventListener('pointerdown', e => { if (e.target === b) closeSheet(); });
+    $('#app').appendChild(b); return b;
+  }
+  function closeSheet() { const b = $('#sheetback'); if (b) b.remove(); }
+  function editItem(id) {
+    const isNew = !id, orig = id ? C.itemById(S, id) : null;
+    const d = orig ? Object.assign({}, orig) : { id: '', name: '', price: 150, shape: 'box', c1: '#e8743b', c2: '#f4ead2', pattern: 'band' };
+    let confirmDel = false;
+    const sw = (key) => PACK.palette.map(c => '<button class="swb' + (d[key] === c ? ' on' : '') + '" style="background:' + c + '" data-k="' + key + '" data-c="' + c + '" aria-label="' + c + '"></button>').join('') + '<label class="swb custom" style="background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red)"><input type="color" data-k="' + key + '" value="' + d[key] + '"></label>';
+    const b = openSheet('<h3>' + (isNew ? 'New item' : 'Edit item') + '</h3><div class="prev" id="prev"></div>' +
+      '<label for="fName">Name</label><input id="fName" maxlength="24" value="' + esc(d.name) + '" placeholder="e.g. Plum Jam">' +
+      '<label for="fPrice">Price (£)</label><input id="fPrice" inputmode="decimal" value="' + (d.price / 100).toFixed(2) + '">' +
+      '<label>Packet shape</label><div class="opts" id="oShape"></div><label>Main colour</label><div class="sw" id="sw1"></div><label>Pattern colour</label><div class="sw" id="sw2"></div>' +
+      '<label>Pattern</label><div class="opts" id="oPat"></div><div class="three"><button class="btn ghost" id="fCancel">Cancel</button>' + (isNew ? '' : '<button class="btn danger" id="fDel">Delete</button>') + '<button class="btn grow" id="fSave">Save</button></div>');
+    function paint() {
+      $('#prev', b).innerHTML = Art.pack(d, { w: 84 }) + '<div class="ptag"><b>' + esc($('#fName', b).value || 'New item') + '</b><span>' + esc($('#fPrice', b).value) + '</span></div>';
+      $('#oShape', b).innerHTML = Art.SHAPES.map(s => '<button class="' + (d.shape === s ? 'on' : '') + '" data-shape="' + s + '">' + Art.pack(Object.assign({}, d, { shape: s }), { w: 34 }) + '<small>' + s + '</small></button>').join('');
+      $('#oPat', b).innerHTML = Art.PATTERNS.map(p => '<button class="' + (d.pattern === p ? 'on' : '') + '" data-pat="' + p + '">' + Art.pack(Object.assign({}, d, { pattern: p }), { w: 34 }) + '<small>' + p + '</small></button>').join('');
+      $$('.swb[data-c]', b).forEach(x => x.classList.toggle('on', d[x.dataset.k] === x.dataset.c));
+    }
+    $('#sw1', b).innerHTML = sw('c1'); $('#sw2', b).innerHTML = sw('c2'); paint();
+    b.addEventListener('click', e => {
+      const t = e.target.closest('button'); if (!t) return;
+      if (t.dataset.shape) { d.shape = t.dataset.shape; Sfx.play('tap'); paint(); }
+      else if (t.dataset.pat) { d.pattern = t.dataset.pat; Sfx.play('tap'); paint(); }
+      else if (t.dataset.c) { d[t.dataset.k] = t.dataset.c; Sfx.play('tap'); paint(); }
+      else if (t.id === 'fCancel') closeSheet();
+      else if (t.id === 'fDel') { if (!confirmDel) { confirmDel = true; t.textContent = 'Tap again to delete'; return; } if (S.items.length <= 4) { toast('Keep at least 4 items'); return; } S.items = S.items.filter(x => x.id !== orig.id); delete S.shelf[orig.id]; save(); closeSheet(); setupItems(); }
+      else if (t.id === 'fSave') {
+        const name = $('#fName', b).value.replace(/[<>]/g, '').trim(), price = K.parsePrice($('#fPrice', b).value);
+        if (!name) { toast('Give the item a name'); return; }
+        if (isNaN(price)) { toast('Price should look like 1.50'); return; }
+        d.name = name.slice(0, 24); d.price = price;
+        if (isNew) { let base = name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 14) || 'item', id = base, n = 2; while (C.itemById(S, id)) id = base + n++; d.id = id; S.items.push(d); }
+        else Object.assign(orig, d);
+        save(); Sfx.play('good'); closeSheet(); setupItems();
+      }
+    });
+    b.addEventListener('input', e => {
+      if (e.target.dataset.k) { d[e.target.dataset.k] = e.target.value; paint(); }
+      else if (e.target.id === 'fName' || e.target.id === 'fPrice') paint();
+    });
+  }
+  function confirmSheet(msg, yes, cb) {
+    const b = openSheet('<h3>' + esc(msg) + '</h3><div class="three"><button class="btn ghost" id="cNo">Stay</button><button class="btn grow" id="cYes">' + esc(yes) + '</button></div>');
+    $('#cNo', b).onclick = closeSheet; $('#cYes', b).onclick = () => { closeSheet(); cb(); };
+  }
+
+  /* ---------------- leaving a game in progress ---------------- */
+  function abandon() { C.returnBasket(S); U.sale = null; U.delivery = null; save(); }
+  function goHome() {
+    const inPlay = ['stage2', 'stage3', 'stage4', 'stage5', 'hand'].indexOf(U.screen) >= 0 && S.basket.length;
+    const leave = () => { abandon(); go('title'); };
+    if (inPlay) confirmSheet('Leave this shop trip? The basket goes back on the shelves.', 'Leave', leave); else { U.delivery = null; go('title'); }
+  }
+
+  /* ---------------- click actions ---------------- */
+  const ACT = {
+    play1: () => go('stage1'),
+    play2: () => advance('stage2'),
+    setup: () => { U.tab = 'store'; go('setup'); },
+    home: () => { go('title'); },
+    handGo: () => { Sfx.play('tap'); go(U.to); },
+    finish1: () => { save(); U.delivery = null; if (C.totalStock(S) > 0) advance('stage2'); else go('title'); },
+    toStock: () => { if (S.basket.length) C.returnBasket(S); save(); go('stage1'); },
+    doneShop: () => { if (S.basket.length) { Sfx.play('good'); go('stage3'); toast('Shopper done. You are now the CASHIER.'); } },
+    signon: () => { const v = $('#opname').value.replace(/[<>]/g, '').trim().slice(0, 16); S.operator = v || 'Operator'; save(); U.sale.step = 'scan'; Sfx.play('approve'); stage3(); },
+    bagall: () => bagAll(),
+    pay: b => { U.sale.method = b.dataset.m; Sfx.play('total'); advance('stage4'); },
+    den: b => { const s = U.sale, d = +b.dataset.d; s.tendered[d] = (s.tendered[d] || 0) + 1; Sfx.play(d >= 500 ? 'note' : 'coin'); cashRefresh(); },
+    unden: b => { const s = U.sale, d = +b.dataset.d; if (s.tendered[d] > 0) s.tendered[d]--; Sfx.play('tap'); cashRefresh(); },
+    clearTender: () => { U.sale.tendered = {}; Sfx.play('tap'); cashRefresh(); },
+    exactTender: () => { const s = U.sale; s.tendered = {}; K.denomsFor(s.total, PACK.denoms).forEach(x => { s.tendered[x.d] = x.n; }); Sfx.play('coin'); cashRefresh(); },
+    handOver: () => { if (K.tenderTotal(U.sale.tendered) >= U.sale.total) { Sfx.play('ching'); advance('stage5'); } },
+    pinkey: b => { const sl = U.sale; if (!sl.cardOk || sl.pinOk) return; if ((sl.pin || '').length < 4) { sl.pin = (sl.pin || '') + b.dataset.k; Sfx.play('key'); pinRefresh(); } },
+    pinback: () => { const sl = U.sale; if (!sl.cardOk || sl.pinOk) return; sl.pin = (sl.pin || '').slice(0, -1); Sfx.play('tap'); pinRefresh(); },
+    pinOk: () => {
+      const sl = U.sale; if (!sl.cardOk || sl.pinOk) return;
+      if ((sl.pin || '').length < 4) { Sfx.play('wrong'); const d = $('#pindots'); d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake'); toast('Enter any 4 numbers'); return; }
+      Sfx.play('approve'); sl.pinOk = true; $('#pinbox').innerHTML = '<h4>PIN ACCEPTED ✓</h4>'; setTimeout(() => advance('stage5'), 650);
+    },
+    accept, issue: issueReceipt,
+    share: shareImage,
+    email: () => {
+      const m = U.sale.model, url = 'mailto:?subject=' + encodeURIComponent('Your receipt from ' + m.store) + '&body=' + encodeURIComponent(C.receiptText(m));
+      try { window.location.href = url; } catch (e) { toast('Could not open email here. Try Copy text.'); }
+      toast('Opening your email app… use Save PNG or Share to send the picture.');
+    },
+    savepng: async () => { const s = U.sale; if (!s.canvas) { toast('No image available'); return; } downloadBlob(await Receipt.blob(s.canvas), 'receipt.png'); toast('Receipt image saved'); },
+    copytext: () => copyText(C.receiptText(U.sale.model)),
+    next: nextCustomer,
+    sound: () => { Sfx.setOn(!Sfx.isOn()); renderBar(); if (Sfx.isOn()) Sfx.play('tap'); },
+    sndset: b => { Sfx.setOn(b.dataset.v === '1'); renderBar(); setupGame(); if (Sfx.isOn()) Sfx.play('tap'); },
+    menu: goHome,
+    tiptoggle: () => { U.tipOpen = U.tipOpen === false; Sfx.play('tap'); renderTip(); },
+    tab: b => { U.tab = b.dataset.t; Sfx.play('tap'); setup(); },
+    logo: b => { S.store.logoId = b.dataset.id; save(); renderBar(); setupStore(); Sfx.play('tap'); },
+    logobg: b => { S.store.logoBg = b.dataset.c; save(); renderBar(); setupStore(); Sfx.play('tap'); },
+    edit: b => editItem(b.dataset.id),
+    newitem: () => editItem(null),
+    set: b => {
+      const k = b.dataset.k, v = b.dataset.v; S.settings[k] = (v === 'true' || v === 'false') ? v === 'true' : parseInt(v, 10);
+      if (k === 'bayCapacity') { const cap = C.capacity(S); Object.keys(S.shelf).forEach(id => { S.shelf[id] = Math.min(S.shelf[id], cap); }); }
+      save(); Sfx.play('tap'); setupGame();
+    },
+    export: () => { downloadBlob(new Blob([JSON.stringify(C.serialize(S), null, 1)], { type: 'application/json' }), 'pass-the-basket-save.json'); toast('Save file downloaded'); },
+    importfile: () => $('#ifile').click(),
+    copysave: () => copyText(JSON.stringify(C.serialize(S))),
+    loadpaste: () => { const t = $('#paste').value.trim(); if (!t) { toast('Paste some save text first'); return; } applyImport(t); },
+    reset: b => { if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Tap again to wipe everything'; return; } S = C.defaultState(); save(); renderBar(); toast('Shop reset'); setup(); }
+  };
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+    Sfx.unlock(); const f = ACT[b.dataset.act]; if (f) f(b, e);
+  });
+
+  /* ---------------- drag and drop (touch + mouse via pointer events) ---------------- */
+  let drag = null, raf = 0;
+  const DROPS = { tray: 'bay', shelf: 'basket', basket2: 'shelf', basket3: 'belt', belt: 'scanner' };
+  function targetAt(x, y) {
+    const e = document.elementFromPoint(x, y); if (!e) return null;
+    return e.closest('[data-bay],[data-drop]');
+  }
+  function validTarget(d, t) {
+    if (!t) return false;
+    if (d.from === 'tray') return t.dataset.bay === d.item;
+    const kind = t.dataset.drop;
+    if (d.from === 'basket3') return kind === 'belt';
+    if (d.from === 'basket2') return t.dataset.bay !== undefined || kind === 'shelf';
+    return kind === DROPS[d.from];
+  }
+  function ghostPoint(x, y) { return [x, y - 28 - drag.gh / 2]; }
+  function dragMove(x, y) {
+    drag.x = x; drag.y = y;
+    drag.ghost.style.transform = 'translate(' + (x - drag.gw / 2) + 'px,' + (y - 28 - drag.gh) + 'px) scale(1.12)';
+    const p = ghostPoint(x, y), t = targetAt(p[0], p[1]);
+    if (drag.hot && drag.hot !== t) drag.hot.classList.remove('hot', 'hotbad');
+    drag.hot = t;
+    if (t) { const ok = validTarget(drag, t); t.classList.toggle('hot', ok); t.classList.toggle('hotbad', !ok && t.dataset.bay !== undefined); }
+  }
+  function tick() {
+    if (!drag || !drag.started) return;
+    const w = $('#shelfwrap');
+    if (w && (drag.from === 'tray' || drag.from === 'basket2')) {
+      const r = w.getBoundingClientRect(); let v = 0;
+      if (drag.x < r.left + 56) v = -11; else if (drag.x > r.right - 56) v = 11;
+      if (v) { w.scrollLeft += v; dragMove(drag.x, drag.y); }
+    }
+    raf = requestAnimationFrame(tick);
+  }
+  document.addEventListener('pointerdown', e => {
+    if (e.button > 0) return;
+    const el = e.target.closest('.dragpack'); if (!el || !$('#view').contains(el)) return;
+    Sfx.unlock();
+    drag = { el, pid: e.pointerId, sx: e.clientX, sy: e.clientY, started: false, from: el.dataset.from, item: el.dataset.item, idx: +el.dataset.idx, u: +el.dataset.u, hot: null, x: e.clientX, y: e.clientY };
+    try { el.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+  });
+  document.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.pid) return;
+    if (!drag.started) {
+      if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 8) return;
+      drag.started = true; Sfx.play('pick');
+      const r = drag.el.getBoundingClientRect(), g = document.createElement('div');
+      drag.gw = Math.max(44, r.width * 1.1); drag.gh = drag.gw * 4 / 3;
+      g.className = 'dgh'; g.style.width = drag.gw + 'px'; g.innerHTML = drag.el.querySelector('svg').outerHTML;
+      document.body.appendChild(g); drag.ghost = g; drag.el.classList.add('lifted'); raf = requestAnimationFrame(tick);
+    }
+    e.preventDefault(); dragMove(e.clientX, e.clientY);
+  }, { passive: false });
+  function endDrag(cancelled) {
+    const d = drag; if (!d) return; drag = null; cancelAnimationFrame(raf);
+    if (d.ghost) d.ghost.remove(); if (d.hot) d.hot.classList.remove('hot', 'hotbad'); d.el.classList.remove('lifted');
+    if (cancelled) return;
+    if (!d.started) { onTap(d); return; }
+    const p = [d.x, d.y - 28 - d.gh / 2], t = targetAt(p[0], p[1]);
+    onDrop(d, t);
+  }
+  document.addEventListener('pointerup', e => { if (drag && e.pointerId === drag.pid) endDrag(false); });
+  document.addEventListener('pointercancel', e => { if (drag && e.pointerId === drag.pid) endDrag(true); });
+
+  function onTap(d) {
+    if (d.from === 'tray') { Sfx.play('tap'); flashBay(d.item); }
+    else if (d.from === 'shelf') pickItem(d.item);
+    else if (d.from === 'basket2') putBackIdx(d.idx);
+    else if (d.from === 'basket3') toBelt(d.u);
+    else if (d.from === 'belt') scanItem(d.u);
+  }
+  function onDrop(d, t) {
+    if (!validTarget(d, t)) {
+      if (t && t.dataset.drop === 'scanner' && d.from === 'basket3') { Sfx.play('wrong'); toast('Put it on the belt first'); }
+      if (d.from === 'tray' && t && t.dataset.bay) { Sfx.play('wrong'); toast('That is not the ' + C.itemById(S, t.dataset.bay).name + ' bay'); }
+      return;
+    }
+    if (d.from === 'tray') {
+      if (C.stock(S, d.item)) { U.delivery.splice(d.idx, 1); U.stocked++; save(); Sfx.play('good'); updateBay(d.item); refreshTray(); const b = $('.bay[data-bay="' + d.item + '"]'); if (b) { b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse'); } }
+    } else if (d.from === 'shelf') pickItem(d.item);
+    else if (d.from === 'basket2') putBackIdx(d.idx);
+    else if (d.from === 'basket3') toBelt(d.u);
+    else if (d.from === 'belt') scanItem(d.u);
+  }
+
+  document.addEventListener('keydown', e => {
+    const sl = U.sale; if (U.screen !== 'stage4' || !sl || !sl.cardOk || sl.pinOk || (e.target && e.target.tagName === 'INPUT')) return;
+    if (/^\d$/.test(e.key)) ACT.pinkey({ dataset: { k: e.key } }); else if (e.key === 'Backspace') ACT.pinback(); else if (e.key === 'Enter') ACT.pinOk();
+  });
+  window.addEventListener('resize', fitShelf);
+  window.PP = { S: () => S, U, C, go, save, toast, ACT };
+  render();
+})();
+</script>
+</body>
+</html>
